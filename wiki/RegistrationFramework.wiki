@@ -2,10 +2,12 @@
 
 == Introduction ==
 
-Registration is one of the most importants parts of a social website. Once an anonymous user accepts to register to our site, he must find the most easy method to do it.
+Registration is one of the most importants parts of a social website. Once an anonymous user accepts to register to our site, he must find the most easy method to do it. This part of the project aims to accomplish this task.
 
 == Actual implementation ==
 
 The registration framework relay on the great [http://code.google.com/p/django-registration django-registration] package, and it adds a form mixed with ajax to ease the registration process.
 
 == Screenshot ==
+
+This is an screenshot of the actual demo version. It has no design, but you can see clearly what can be done:
