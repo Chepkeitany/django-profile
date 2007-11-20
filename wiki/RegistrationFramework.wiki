@@ -1,3 +1,4 @@
+#labels registration,usability,ajax,django,jquery
 = Registration Framework =
 
 == Introduction ==
@@ -11,3 +12,5 @@ The registration framework relay on the great [http://code.google.com/p/django-r
 == Screenshot ==
 
 This is an screenshot of the actual demo version. It has no design, but you can see clearly what can be done:
+
+[http://django-profile.googlecode.com/files/registration.png]
