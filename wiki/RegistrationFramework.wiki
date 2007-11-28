@@ -15,6 +15,6 @@ This is an screenshot of the actual demo version. It has no design, but you can 
 
 == Detail ==
 
-In the registration form, we ask the user for 3 fields of information: username, e-mail, and a password. Whenever the user inserts data, it will be checked internally (with Ajax) warning the user when something is wrong. All of these trying to make the user data introduction the less painful possible.
+In the registration form, we ask the user for 2 fields of information: username and a password. Whenever the user inserts data, it will be checked internally (with Ajax) warning the user when something is wrong. All of these trying to make the user data introduction the less painful possible.
 
-When all the information is correct, it will start the e-mail validation process, where an e-mail will be send to the user asking him to confirm the account creation.
+When all the information is correct the user will be automatically created in the system.
