@@ -5,9 +5,6 @@
 
 Registration is one of the most importants parts of a social website. Once an anonymous user accepts to register to our site, he must find the most easy method to do it. This part of the project aims to accomplish this task.
 
-== Actual implementation ==
-
-The registration framework relay on the great [http://code.google.com/p/django-registration django-registration] package, and it adds a user registration form mixed with ajax to ease the registration process.
 
 == Screenshot ==
 
@@ -21,5 +18,3 @@ This is an screenshot of the actual demo version. It has no design, but you can 
 In the registration form, we ask the user for 3 fields of information: username, e-mail, and a password. Whenever the user inserts data, it will be checked internally (with Ajax) warning the user when something is wrong. All of these trying to make the user data introduction the less painful possible.
 
 When all the information is correct, it will start the e-mail validation process, where an e-mail will be send to the user asking him to confirm the account creation.
-
-
