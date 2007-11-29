@@ -1,0 +1,5 @@
+* Deal with microformats.
+* Integrate OpenID authentication.
+* Internacionalization.
+* E-mail not detected as SPAM in Gmail.
+* Improve the country list.

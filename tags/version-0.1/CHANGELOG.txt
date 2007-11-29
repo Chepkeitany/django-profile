@@ -1,0 +1,15 @@
+========================
+django-profile Changelog
+========================
+
+* Save profile Ajax-like.
+* Removed the django-registration dependency.
+* Added hCard information in the UserCard.
+* Code cleaned-up and commented.
+* Use of geonames.org webservice to obtain the Country and region when clicking on the Google Map.
+* Changed to new version of ui.datepicker
+
+Version 0.001, 19 Nov 2007
+------------------------
+
+* First version uploaded to repository

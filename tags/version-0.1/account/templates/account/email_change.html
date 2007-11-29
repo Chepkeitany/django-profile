@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "E-mail change" %}{% endblock %}
+{% block customjs %}
+<script type="text/javascript" src="/site_media/js/jquery.emailchg.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "E-mail change" %}</h1>
+
+<p>{% trans "Insert the new e-mail address. An e-mail will be send to it for testing and confirmation." %}
+
+<form class="userdata" action="" method="post">
+  <fieldset>
+    <div style="overflow: hidden; margin-bottom: 5px;">
+    	<label for="id_email" style="width: 170px;">{% trans 'New e-mail address:' %}</label>
+    	{{ form.email }}
+      <div id="emailmsg" class="message">
+        {% if form.username.errors %}{{ form.username.errors|join:", " }}{% endif %}
+      </div>
+		</div>
+		<br />
+   	<input type="submit" value="{% trans 'Send confirmation' %}" />
+  </fieldset>
+  {% if form.errors %}
+  <div class="errmsg">
+    <p>{{form.email.errors}}</p>
+  </div>
+  {% endif %}
+</form>
+<p><a href="/profile">Return to my profile</a></p>
+{% endblock %}
