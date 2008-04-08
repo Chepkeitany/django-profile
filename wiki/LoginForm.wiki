@@ -5,4 +5,4 @@ This is the login form, which can be customized to our designs needs. It has a l
 
 == Screenshot ==
 
-[http://django-profile.googlecode.com/files/login.png]
+[http://django-profile.googlecode.com/files/login2.png]
