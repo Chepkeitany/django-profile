@@ -11,4 +11,4 @@ The user can specify his exact location with the Google Maps window embedded in 
 
 == Screenshot ==
 
-[http://django-profile.googlecode.com/files/profile.png]
+[http://django-profile.googlecode.com/files/maps2.png]
