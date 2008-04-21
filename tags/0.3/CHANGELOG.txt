@@ -1,0 +1,35 @@
+========================
+django-profile Changelog
+========================
+
+Version 0.2.2
+-------------
+* WARNING!!! "profile" module renamed to "userprofile". The old name had a conflict with the python-profiler
+  module. If you're updating from the old version, you will have to dump and restore the old database data. 
+  Thanks to Mario Cesar for the report.
+* The allowed chars for a username are A-Z, a-z, 0-9 and _
+* Solved some mess with the importing of settings variables. Thanks to Mario Cesar.
+* We can activate an e-mail validation on the registration process.
+
+Version 0.2.1
+-------------
+
+* Added Portuguese Brazilian (pt-br) localization. Thanks to Pedro Valente.
+* Added Spanish (es) localization.
+* Localization framework. 
+* Better registration form. Check valid usernames.
+
+Version 0.1
+-----------
+
+* Save profile Ajax-like.
+* Removed the django-registration dependency.
+* Added hCard information in the UserCard.
+* Code cleaned-up and commented.
+* Use of geonames.org webservice to obtain the Country and region when clicking on the Google Map.
+* Changed to new version of ui.datepicker
+
+Version 0.001, 19 Nov 2007
+------------------------
+
+* First version uploaded to repository
