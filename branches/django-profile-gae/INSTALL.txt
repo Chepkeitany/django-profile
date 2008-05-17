@@ -1,0 +1,115 @@
+------------------
+-- Requeriments --
+------------------
+
+First of all, the requerimient to run this software is:
+
+	* Django version 0.96 or greater.
+
+	* The Python Imaging Library:
+		* python-imaging package (on Debian or Ubuntu).
+		* Source: http://www.pythonware.com/products/pil/
+
+	* The Python libmagic bindings:
+		* python-magic package (on Debian, Ubuntu or Fedora):
+		* Source: ftp://ftp.gw.com/mirrors/pub/unix/file/file-4.23.tar.gz
+
+
+You can see a demo of which can be accomplished here:
+
+	http://profile.coredump.es
+
+-----------------
+-- Quick guide --
+-----------------
+
+You can run the demo supplied with this software package following these steps:
+
+* Make django visible in your python path. You could import the last version
+from the repository executing this command on this directory:
+
+	$ svn co http://code.djangoproject.com/svn/django/trunk/django
+
+* Make the "userprofile" and "account" modules visible to your PYTHONPATH.
+
+* Go to the "demo" directory located in this directory and run:
+
+	$ python manage.py syncdb
+and
+	$ python manage.py runserver
+
+
+You can now connect to the django web server and try the demo. 
+
+Optional:
+
+* Fill the Continents and Countries information with the database supplied. Follow
+  this steps:
+
+$ python manage.py shell
+>>> from userprofile.models import Continent,Country
+>>> Continent().importdata()
+>>> Country().importdata()
+
+
+* You will need a valid e-mail server to try the e-mail validation process. 
+  Fill this information in settings.py:
+
+# e-mail settings
+DEFAULT_FROM_EMAIL = ''
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+
+* You also will need a valid Google Maps API Key. Obtain one for your site name here:
+
+	http://www.google.com/apis/maps/signup.html
+
+  Put the obtained key in the constant APIKEY located in the file 'settings.py'.
+
+--------------------------
+-- Custom install guide --
+--------------------------
+Once you've seen what can be done, you could integrate django-profile with your custom
+software. Basically, you need these things:
+
+* Add django and the required modules accesible from your PYTHON_PATH (Look at the demo
+  section).
+
+* Add this directive to the 'settings.py' file:
+	AUTH_PROFILE_MODULE = 'userprofile.profile'
+
+* Add this modules to the INSTALLED_APPS section of your settings.py:
+	'userprofile',
+	'account',
+
+* Add this lines to your urls.py file:
+
+    (r'^profile/', include('userprofile.urls')),
+    (r'^accounts/', include('account.urls')),
+
+* Make the "media" directory accesible as your media content, or add the following line
+  to urls.py to test it:
+
+    # Serves media content. WARNING!! Only for development uses
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '../media/'}),
+
+    This sample assumes that settings.MEDIA_URL="site_media", if you want to use another URI for
+    the media content, you also need to change the paths /site_media/.. of the static content 
+    files (CSS and javascript files).
+
+* Fill the needed data of countries and continents of the profile database with these commands:
+	$ python manage.py shell
+	>>> from userprofile.models import Continent,Country
+	>>> Continent().importdata()
+	>>> Country().importdata()
+
+* You will need to fill the e-mail server configuration of settings.py (if you didn't have it yet)
+  to try the e-mail validation process.
+
+* You will need a valid Google Maps API Key for your site. Put the key in the constant APIKEY located
+  in the file 'settings.py'.
+
+* Add the 'templates' directory to the TEMPLATES_DIRS section of your 'settings.py'. 
+  You can also modify the default templates supplied with the modules 'account' and 'userprofile'
+
