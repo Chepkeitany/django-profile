@@ -1,13 +1,13 @@
 from django import newforms as forms
+from google.appengine.ext.db import djangoforms
 from django.core.exceptions import ObjectDoesNotExist
 from userprofile.models import Profile, Avatar, GENDER_CHOICES
 from django.utils.translation import ugettext as _
 from userprofile.models import Country
-import magic
 
 IMAGE_TYPES = { 'JPEG image data': '.jpg', 'PNG image data': '.png', 'GIF image data': '.gif' }
 
-class ProfileForm(forms.ModelForm):
+class ProfileForm(djangoforms.ModelForm):
     """
     Profile Form. Composed by all the Profile model fields.
     """

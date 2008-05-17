@@ -15,7 +15,7 @@
 		<div class="header">
 			<ul class="menu">
 				<li><a href="/">{% trans "Frontpage" %}</a></li>
-  			{% if user.is_authenticated %}
+  			{% if users.get_current_user %}
 				<li><a href="/profile/">{% trans "Profile" %}</a></li>
    			<li><a href="/accounts/logout/">{% trans "Logout" %}</a></li>
 				{% else %} 
@@ -23,7 +23,7 @@
   			{% endif %}
   		</ul>
 			{% if not user.is_authenticated %}
-			<p class="register">{% trans "If you don't have an account, you can" %} <a href="/accounts/register/">{% trans "sign up" %}</a> {% trans "for one; it's free, and you could try this demo and publish your usercard." %}</p>
+			<p class="register">{% trans "If you don't have an account, you can" %} <a href="/profile/">{% trans "login" %}</a> {% trans "and get one; it's free, and you could try this demo and publish your usercard." %}</p>
 			{% endif %}
 		</div>
 		{% block content %}{% endblock %}
