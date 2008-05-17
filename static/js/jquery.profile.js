@@ -93,13 +93,13 @@ $(function(){
 
 	// Click on the save button
 	$("input[@type=button].save").click(function() {
-		$("img.saving").attr("src", "/site_media/images/loading3.png");
+		$("img.saving").attr("src", "/static/images/loading3.png");
 		$("img.saving").show();
 		$.post("/profile/save/", $("form").serialize(), function(data) {
 			if (data.success) {
-				$("img.saving").attr("src", "/site_media/images/good.png");
+				$("img.saving").attr("src", "/static/images/good.png");
 			} else {
-				$("img.saving").attr("src", "/site_media/images/error.png");
+				$("img.saving").attr("src", "/static/images/error.png");
 			}
 		}, "json");
 	});
@@ -159,7 +159,7 @@ $(function(){
   $("a.delavatar").click(function() {
     $.getJSON("/profile/avatar/delete/", function(data) {
 			if (data.success) {
-				$("img#avatarimg").attr("src", "/site_media/images/default.gif");
+				$("img#avatarimg").attr("src", "/static/images/default.gif");
 			}
     });
 

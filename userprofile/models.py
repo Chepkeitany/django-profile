@@ -1,17 +1,15 @@
-from django.db import models
-from django.contrib.auth.models import User
+from google.appengine.ext import db
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from django.conf import settings
 import datetime
-import Image, ImageFilter
 import os.path
 
 AVATARSIZES = ( 128, 96, 64, 32, 16 )
 GENDER_CHOICES = ( ('F', _('Female')), ('M', _('Male')),)
 GENDER_IMAGES = { "M": "%simages/male.png" % settings.MEDIA_URL, "F": "%simages/female.png" % settings.MEDIA_URL }
 
-class Continent(models.Model):
+class Continent(db.Model):
     """
     Continent class. Simple class with the information about continents.
     It can be filled up with calling the "importdata" method:
@@ -19,9 +17,9 @@ class Continent(models.Model):
     >>> Continent().importdata()
 
     """
-    slug = models.SlugField(prepopulate_from=('name',), unique=True)
-    code = models.CharField(max_length=2, primary_key=True)
-    name = models.CharField(max_length=255, unique=True)
+    slug = db.StringProperty(required=True)
+    code = db.StringProperty(required=True)
+    name = db.StringProperty(required=True)
 
     def __unicode__(self):
         return self.name
@@ -46,17 +44,17 @@ class Continent(models.Model):
         verbose_name = _('Continent')
         verbose_name_plural = _('Continents')
 
-class Country(models.Model):
+class Country(db.Model):
     """
     Country class with the countries data needed in the Profile class. Dependent
     of the Continent class.
     To fill it with data, the file "countries.txt" is needed:
     >>> Country().importdata()
     """
-    name = models.CharField(max_length=255, unique=True)
-    slug = models.SlugField(prepopulate_from=('name',), unique=True)
-    code = models.CharField(max_length=2, primary_key=True)
-    continent = models.ForeignKey(Continent)
+    slug = db.StringProperty(required=True)
+    code = db.StringProperty(required=True)
+    name = db.StringProperty(required=True)
+    continent = db.ReferenceProperty(Continent)
 
     def __unicode__(self):
         return self.name
@@ -85,15 +83,15 @@ class Country(models.Model):
         verbose_name_plural = _('Countries')
 
 
-class Avatar(models.Model):
+class Avatar(db.Model):
     """
     Avatar class. Every user can have one avatar associated.
     """
-    photo = models.ImageField(upload_to="avatars/%Y/%b/%d")
-    date = models.DateTimeField(default=datetime.datetime.now)
-    user = models.OneToOneField(User, blank=True)
-    box = models.CharField(max_length=255, blank=True)
-    valid = models.BooleanField(default=False)
+    photo = db.BlobProperty()
+    date = db.DateTimeProperty(auto_now_add=True)
+    user = db.UserProperty()
+    box = db.StringProperty()
+    valid = db.BooleanProperty(default=False)
 
     def get_absolute_url(self):
         return self.get_photo_url()
@@ -110,20 +108,7 @@ class Avatar(models.Model):
 
         if self.valid:
             Avatar.objects.filter(user=self.user).exclude(pk=self.pk).delete()
-            base, ext = os.path.splitext(self.get_photo_filename())
-
-            image = Image.open(self.get_photo_filename())
-            box = self.box.split("-")
-            box = [ int(num) for num in box ]
-            image = image.crop(box)
-            if image.mode not in ('L', 'RGB'):
-                image = image.convert('RGB')
-
-            for size in AVATARSIZES:
-                image.thumbnail((size, size), Image.ANTIALIAS)
-                image.save("%s.%s%s" % ( base, size, ext))
-
-            del image
+            # creamos los avatares
 
     def delete(self):
         filename = self.get_photo_filename()
@@ -142,23 +127,22 @@ class Avatar(models.Model):
         super(Avatar, self).delete()
 
 
-class Profile(models.Model):
+class Profile(db.Model):
     """
     User profile model
     """
 
-    firstname = models.CharField(max_length=255, blank=True)
-    surname = models.CharField(max_length=255, blank=True)
-    user = models.OneToOneField(User, primary_key=True)
-    birthdate = models.DateField(default=datetime.date.today(), blank=True)
-    date = models.DateTimeField(default=datetime.datetime.now)
-    url = models.URLField(blank=True, core=True)
-    about = models.TextField(blank=True)
-    latitude = models.DecimalField(max_digits=10, decimal_places=6, default=0)
-    longitude = models.DecimalField(max_digits=10, decimal_places=6, default=0)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
-    country = models.ForeignKey(Country, null=True, blank=True)
-    location = models.CharField(max_length=255, blank=True)
+    firstname = db.StringProperty()
+    surname = db.StringProperty()
+    user = db.UserProperty()
+    birthdate = db.DateProperty(default=datetime.date.today())
+    date = db.DateTimeProperty(auto_now_add=True)
+    url = db.LinkProperty()
+    about = db.TextProperty()
+    geopoint = db.GeoPtProperty()
+    gender = db.StringProperty()
+    country = db.ReferenceProperty(Country)
+    location = db.StringProperty()
 
     class Admin:
         pass

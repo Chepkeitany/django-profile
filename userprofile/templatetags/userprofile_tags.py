@@ -1,26 +1,21 @@
 from django.template import Library
 from django.template.defaultfilters import stringfilter
-from django.contrib.auth.models import User
+from google.appengine.api import users
 from userprofile.models import Profile,Avatar
 from django.conf import settings
-import datetime
 import os.path
 
 register = Library()
 
 @register.inclusion_tag('userprofile/usercard.html')
-def get_usercard(user):
-    profile, created = Profile.objects.get_or_create(user=user)
+def get_usercard(profile):
     return locals()
 
 @register.filter
 @stringfilter
-def avatar(user, width):
-    user = User.objects.get(username=user)
+def avatar(email, width):
     try:
-        if type(user) == type(u"") or type(user) == type(""):
-            user = User.objects.get(username=user)
-
+        user = users.User(email)
         avatar = Avatar.objects.get(user=user)
         if avatar.get_photo_filename() and os.path.isfile(avatar.get_photo_filename()):
             avatar_url = avatar.get_absolute_url()

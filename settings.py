@@ -23,6 +23,9 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
+# 192.168.0.100:8000/
+APIKEY = "ABQIAAAA06IJoYHDPFMx4u3hTtaghxTU2QkCNWGFpwxhhQnHf-7Pc6f1lBTQWFSuWvEBhZGiAbR5wPO0DLqoOw"
+
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'appengine'  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -56,7 +59,7 @@ MEDIA_ROOT = ''
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -84,7 +87,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #    'django.core.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
-#    'django.core.context_processors.media',  # 0.97 only.
+    'django.core.context_processors.media',  # 0.97 only.
 #    'django.core.context_processors.request',
 )
 
@@ -97,7 +100,6 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
      'appengine_django',
-     'demo',
      'userprofile',
 #    'django.contrib.auth',
 #    'django.contrib.contenttypes',
