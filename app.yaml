@@ -1,4 +1,4 @@
-application: django-profile-demo
+application: django-profile
 version: 1
 runtime: python
 api_version: 1

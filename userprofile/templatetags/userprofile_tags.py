@@ -16,7 +16,7 @@ def get_usercard(profile):
 def avatar(email, width):
     try:
         user = users.User(email)
-        avatar = Avatar.objects.get(user=user)
+        avatar = Avatar.filter("user=",user).get()
         if avatar.get_photo_filename() and os.path.isfile(avatar.get_photo_filename()):
             avatar_url = avatar.get_absolute_url()
         else:

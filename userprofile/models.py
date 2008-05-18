@@ -28,7 +28,7 @@ class Continent(db.Model):
         return "/continent/%s/" % self.slug
 
     def importdata(self):
-        Continent.objects.all().delete()
+        Continent.all().delete()
         Continent(name="Asia", slug=slugify("Asia"), code="AS").save()
         Continent(name="Africa", slug=slugify("Africa"), code="AF").save()
         Continent(name="Europe", slug=slugify("Europe"), code="EU").save()
