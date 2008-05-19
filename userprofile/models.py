@@ -12,12 +12,16 @@ GENDER_IMAGES = { "M": "%simages/male.png" % settings.MEDIA_URL, "F": "%simages/
 class Continent(db.Model):
     """
     Continent class. Simple class with the information about continents.
-    It can be filled up with calling the "importdata" method:
+    It can be filled up with this data:
 
-    >>> Continent().importdata()
-
+Continent(name="Asia", code="AS").save()
+Continent(name="Africa", code="AF").save()
+Continent(name="Europe", code="EU").save()
+Continent(name="North America", code="NA").save()
+Continent(name="South America", code="SA").save()
+Continent(name="Oceania", code="OC").save()
+Continent(name="Antarctica", code="AN").save()
     """
-    slug = db.StringProperty(required=True)
     code = db.StringProperty(required=True)
     name = db.StringProperty(required=True)
 
@@ -26,16 +30,6 @@ class Continent(db.Model):
 
     def get_absolute_url(self):
         return "/continent/%s/" % self.slug
-
-    def importdata(self):
-        Continent.all().delete()
-        Continent(name="Asia", slug=slugify("Asia"), code="AS").save()
-        Continent(name="Africa", slug=slugify("Africa"), code="AF").save()
-        Continent(name="Europe", slug=slugify("Europe"), code="EU").save()
-        Continent(name="North America", slug=slugify("North America"), code="NA").save()
-        Continent(name="South America", slug=slugify("South America"), code="SA").save()
-        Continent(name="Oceania", slug=slugify("Oceania"), code="OC").save()
-        Continent(name="Antarctica", slug=slugify("Antarctica"), code="AN").save()
 
     class Admin:
         pass
@@ -48,12 +42,21 @@ class Country(db.Model):
     """
     Country class with the countries data needed in the Profile class. Dependent
     of the Continent class.
-    To fill it with data, the file "countries.txt" is needed:
-    >>> Country().importdata()
+
+    Fill the database with this code:
+
+f = open("db/countries.txt")
+for line in f.xreadlines():
+    line = line.strip()
+    d, name = line.split('"')[:-1]
+    continent, code = d.split(",")[:-1]
+    c = Continent.all().filter("code = ", continent).get()
+    p = Country(name=name, code=code, continent=c)
+    p.save()
+
     """
-    slug = db.StringProperty(required=True)
-    code = db.StringProperty(required=True)
     name = db.StringProperty(required=True)
+    code = db.StringProperty(required=True)
     continent = db.ReferenceProperty(Continent)
 
     def __unicode__(self):
@@ -61,17 +64,6 @@ class Country(db.Model):
 
     def get_absolute_url(self):
         return "/country/%s/" % self.slug
-
-    def importdata(self, file="db/countries.txt"):
-        Country.objects.all().delete()
-        f = open(file)
-        for line in f.xreadlines():
-            line = line.strip()
-            d, name = line.split('"')[:-1]
-            continent, code = d.split(",")[:-1]
-            c = Continent.objects.filter(code=continent)[0]
-            p = Country(name=name, slug=slugify(name), code=code, continent=c)
-            p.save()
 
     class Admin:
         list_display = ('name', 'continent')
@@ -154,7 +146,7 @@ class Profile(db.Model):
         return GENDER_IMAGES[self.gender]
 
     def get_absolute_url(self):
-        return "/profile/users/%s/" % self.user
+        return "/profile/users/%s/" % self.user.nickname()
 
     def yearsold(self):
         return (datetime.date.today().toordinal() - self.birthdate.toordinal()) / 365

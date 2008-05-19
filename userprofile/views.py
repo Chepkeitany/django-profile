@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import simplejson
 from userprofile.models import Avatar, Profile, Continent, Country
 from django.template import RequestContext
+from google.appengine.api.urlfetch import fetch
 from django.conf import settings
 import random
 import urllib
@@ -30,7 +31,7 @@ def fetch_geodata(request, lat, lng):
     user = users.get_current_user()
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         url = "http://ws.geonames.org/countrySubdivision?lat=%s&lng=%s" % (lat, lng)
-        dom = minidom.parse(urllib.urlopen(url))
+        dom = minidom.parseString(fetch(url).content)
         country = dom.getElementsByTagName('countryCode')
         if len(country) >=1:
             country = country[0].childNodes[0].data
@@ -43,10 +44,14 @@ def fetch_geodata(request, lat, lng):
         raise Http404()
 
 def public(request, APIKEY, current_user, template):
-    try:
-        user = users.User( "%s@gmail.com" % current_user)
-        profile = Profile.all().filter("user = ", user).get()
-    except:
+    profile = None
+    for p in Profile.all():
+        if p.user.nickname() == current_user:
+            profile = p
+            user = p.user
+            break
+
+    if not profile:
         raise Http404
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
