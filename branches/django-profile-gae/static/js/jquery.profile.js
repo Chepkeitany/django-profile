@@ -9,8 +9,10 @@ function mapFramework() {
 		this.map.enableContinuousZoom();
 
 		var lat = lng = 0;
-		if ($("#id_latitude").val()) lat = $("#id_latitude").val();
-		if ($("#id_longitude").val()) lng = $("#id_longitude").val();
+		if ($("#id_geopoint").val()) {
+			lat = $("#id_geopoint").val().split(",")[0];
+			lng = $("#id_geopoint").val().split(",")[1];
+		}
 
   	this.map.setCenter(new GLatLng(lat, lng), 4);
 		this.marker = new GMarker(new GLatLng(lat, lng), {clickable: false, bouncy: true, draggable: true}); 
@@ -19,8 +21,7 @@ function mapFramework() {
 		GEvent.addListener(this.marker, "dragend", function(){
     	$("img.loading").show();
     	var point = this.getLatLng();
-    	$("#id_latitude").val(point.lat().toFixed(6));
-    	$("#id_longitude").val(point.lng().toFixed(6));
+    	$("#id_geopoint").val(point.lat().toFixed(6) + "," + point.lng().toFixed(6));
     	$.getJSON("/profile/getcountry_info/" + point.lat() + "/" +  point.lng() + "/", function(data) {
       	$("#id_country").val(data['country']);
       	$("#id_location").val(data['region']);
@@ -44,8 +45,7 @@ mapFramework.prototype.searchLocation = function() {
  		if (point) {
  			g.map.setCenter(point);
  			g.marker.setLatLng(point);
- 			$("#id_latitude").val(point.lat().toFixed(6));
- 			$("#id_longitude").val(point.lng().toFixed(6));
+ 			$("#id_geopoint").val(point.lat().toFixed(6) + "," + point.lng().toFixed(6));
  			$.getJSON("/profile/getcountry_info/" + point.lat() + "/" +  point.lng() + "/", function(data) {
  				$("#id_country").val(data['country']);
  				$("img.loading").hide();

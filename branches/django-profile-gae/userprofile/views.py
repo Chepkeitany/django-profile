@@ -39,7 +39,8 @@ def fetch_geodata(request, lat, lng):
         if len(region) >=1:
             region = region[0].childNodes[0].data
 
-        return HttpResponse(simplejson.dumps({'success': True, 'country': country, 'region': region}))
+        country = Country.all().filter("code = ", country).get()
+        return HttpResponse(simplejson.dumps({'success': True, 'country': country.key().__str__(), 'region': region}))
     else:
         raise Http404()
 
