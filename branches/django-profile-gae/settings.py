@@ -26,6 +26,9 @@ ADMINS = (
 # 192.168.0.100:8000/
 APIKEY = "ABQIAAAA06IJoYHDPFMx4u3hTtaghxTU2QkCNWGFpwxhhQnHf-7Pc6f1lBTQWFSuWvEBhZGiAbR5wPO0DLqoOw"
 
+# Haddock
+APIKEY="ABQIAAAA06IJoYHDPFMx4u3hTtaghxS1mGAeXhF8eEwoOC3WUqD9xSVHbhT_wvgbriWemZzoPwFT5-HqnLJ9-A"
+
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'appengine'  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
