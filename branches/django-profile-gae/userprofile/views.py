@@ -119,8 +119,10 @@ def avatarChoose(request, template):
             for avatar in Avatar.all().filter("user = ", user).filter("valid = ", False):
                 avatar.delete()
 
-            avatar = form.save(commit=False)
-            avatar.user = user
+            photo = form.cleaned_data.get('photo')
+            ext_mimetypes = { 'jpg': 'image/jpeg', 'gif': 'image/gif', 'png': 'image/png' }
+            mimetype = ext_mimetypes.get(photo.filename.split(".")[-1])
+            avatar= Avatar(photo=photo.content, mimetype=mimetype, user=user)
             avatar.save()
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))

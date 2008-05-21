@@ -80,6 +80,7 @@ class Avatar(db.Model):
     Avatar class. Every user can have one avatar associated.
     """
     photo = db.BlobProperty()
+    mimetype = db.StringProperty()
     date = db.DateTimeProperty(auto_now_add=True)
     user = db.UserProperty()
     box = db.StringProperty()
