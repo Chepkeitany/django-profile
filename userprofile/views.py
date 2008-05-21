@@ -116,10 +116,11 @@ def avatarChoose(request, template):
     else:
         form = AvatarForm(request.POST, request.FILES)
         if form.is_valid():
-            data = form.cleaned_data.get('photo')
-            Avatar.all().filter("user = ", user).filter("valid = ", False).delete()
-            avatar = Avatar(user=user)
-            avatar.save_photo_file("%s%s" % (request.user.username, data.get('extension')), data['photo'].content)
+            for avatar in Avatar.all().filter("user = ", user).filter("valid = ", False):
+                avatar.delete()
+
+            avatar = form.save(commit=False)
+            avatar.user = user
             avatar.save()
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
@@ -148,6 +149,12 @@ def avatarCrop(request, avatar_id, template):
         done = True
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
+
+def getavatar(request, avatar_id, size=None):
+    try:
+        Avatar.all().filter("id = ", id).get()
+    except:
+        return HttpResponseRedirect("/static/images/default.png")
 
 @login_required
 def avatarDelete(request, avatar_id=False):
