@@ -3,19 +3,20 @@
 {% load userprofile_tags %}
 {% block title %}{{ profile.user }}'s public profile{% endblock %}
 {% block customjs %}
-{% if profile.latitude and profile.longitude %}
-<script src="http://maps.google.com/maps?file=api&v=2&key={{ apikey }}" />
+{% if profile.geopoint %}
+<script type="text/javascript" src="http://www.google.com/jsapi?key={{ APIKEY }}"></script>
+<script type="text/javascript">google.load("maps", "2");</script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.3.pack.js"></script>
 <script type="text/javascript">
 	$(function() {
-  	if (GBrowserIsCompatible()) {
-      var map = new GMap2(document.getElementById("map"));
-    	map.addControl(new GLargeMapControl());
-    	map.addControl(new GOverviewMapControl())
-    	map.addControl(new GMapTypeControl())
+  	if (google.maps.BrowserIsCompatible()) {
+      var map = new google.maps.Map2(document.getElementById("map"));
+    	map.addControl(new google.maps.LargeMapControl());
+    	map.addControl(new google.maps.OverviewMapControl())
+    	map.addControl(new google.maps.MapTypeControl())
     	map.enableContinuousZoom();
-    	map.setCenter(new GLatLng({{ profile.latitude }}, {{ profile.longitude }}), 4);
-    	var marker = new GMarker(new GLatLng({{ profile.latitude }}, {{ profile.longitude }}), {clickable: false });
+    	map.setCenter(new google.maps.LatLng({{ profile.geopoint.lat }}, {{ profile.geopoint.lon }}), 4);
+    	var marker = new google.maps.Marker(new google.maps.LatLng({{ profile.geopoint.lat }}, {{ profile.geopoint.lon }}), {clickable: false });
     	map.addOverlay(marker);
     }
 	});
@@ -36,9 +37,9 @@
 		{% if profile.country %}<li>{% trans "Country" %}: {{ profile.country }}</li>{% endif %}
 		{% if profile.location %}<li>{% trans "Location" %}: {{ profile.location }}</li>{% endif %}
 		{% if profile.latitude and profile.longitude %}
-		<li><div id="map"></div></li>
 		{% endif %}
 	</ul>
 </div>
+<div id="map"></div>
 {% endblock %}
 

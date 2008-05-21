@@ -71,6 +71,7 @@ def private(request, APIKEY, template):
     form = ProfileForm(instance=profile)
     continents = Continent.all()
     country_data = dict()
+    spain = Country.all().filter("name = ", "Spain").get()
     for continent in continents:
         country_data[continent] = Country.all().filter("continent = ", continent)
 
@@ -95,16 +96,10 @@ def delete(request, template):
     user = users.get_current_user()
     if request.method == "POST":
         # Remove the profile
-        try:
-            Profile.all().filter("user = ", user).delete()
-        except:
-            pass
-
-        # Remove the avatar if exists
-        try:
-            Avatar.all().filter("user = ", user).delete()
-        except:
-            pass
+        for profile in Profile.all().filter("user = ", user):
+            profile.delete()
+        for avatar in Avatar.all().filter("user = ", user):
+            avatar.delete()
 
         return HttpResponseRedirect('%sdone/' % request.path)
 
