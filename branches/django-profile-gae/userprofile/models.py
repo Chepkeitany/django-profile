@@ -99,25 +99,8 @@ class Avatar(db.Model):
         super(Avatar, self).save()
 
         if self.valid:
-            Avatar.objects.filter(user=self.user).exclude(pk=self.pk).delete()
-            # creamos los avatares
-
-    def delete(self):
-        filename = self.get_photo_filename()
-        base, ext = os.path.splitext(filename)
-        for size in AVATARSIZES:
-            try:
-                os.remove("%s.%s%s" % ( base, size, ext))
-            except:
-                pass
-
-        try:
-            os.remove(self.get_photo_filename())
-        except:
-            pass
-
-        super(Avatar, self).delete()
-
+            for avatar in Avatar.all().filter("user = ", self.user).exclude(pk=self.pk):
+                avatar.delete()
 
 class Profile(db.Model):
     """
