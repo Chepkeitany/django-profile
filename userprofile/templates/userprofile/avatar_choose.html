@@ -36,6 +36,9 @@
     {{ form.photo }}
     <input type="button" class="cancel" value="{% trans 'Cancel' %}" />
   </form>
+	{% if form.errors %}
+	{{ form.errors }}
+	{% endif %}
 	<div class="loading">
 		<p><img src="{{ MEDIA_URL }}images/loading2.gif" /> {% trans "Please wait..." %}</p>
 	</div>

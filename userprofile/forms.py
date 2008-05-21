@@ -14,13 +14,20 @@ class ProfileForm(djangoforms.ModelForm):
         model = Profile
         exclude = ('user', 'slug', 'date')
 
-class AvatarForm(djangoforms.ModelForm):
+class AvatarForm(forms.Form):
     """
     The avatar form requires only one image field.
     """
-    class Meta:
-        model = Avatar
-        exclude = ('user', 'date', 'valid', 'box')
+    photo = forms.FileField()
+
+    def clean_photo(self):
+        ext_mimetypes = { 'jpg': 'image/jpeg', 'gif': 'image/gif', 'png': 'image/png', }
+        photo = self.cleaned_data.get('photo')
+        if not photo.filename.split(".")[-1] in ext_mimetypes:
+            raise forms.ValidationError(_('The file type is invalid: %s' % type))
+
+        return photo
+
 
 class AvatarCropForm(forms.Form):
     """
