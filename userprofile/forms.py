@@ -1,9 +1,7 @@
-from django import newforms as forms
 from google.appengine.ext.db import djangoforms
-from django.core.exceptions import ObjectDoesNotExist
-from userprofile.models import Profile, Avatar, GENDER_CHOICES
+from django import newforms as forms
 from django.utils.translation import ugettext as _
-from userprofile.models import Country
+from userprofile.models import Profile
 
 class ProfileForm(djangoforms.ModelForm):
     """
@@ -22,8 +20,8 @@ class AvatarForm(forms.Form):
 
     def clean_photo(self):
         ext_mimetypes = { 'jpg': 'image/jpeg', 'gif': 'image/gif', 'png': 'image/png', }
-        photo = self.cleaned_data.get('photo')
-        if not photo.filename.split(".")[-1] in ext_mimetypes:
+        photo = self.cleaned_data['photo']
+        if not photo.filename.split(".")[-1].lower() in ext_mimetypes.keys():
             raise forms.ValidationError(_('The file type is invalid: %s' % type))
 
         return photo

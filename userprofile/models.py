@@ -75,34 +75,6 @@ for line in f.xreadlines():
         verbose_name_plural = _('Countries')
 
 
-class Avatar(db.Model):
-    """
-    Avatar class. Every user can have one avatar associated.
-    """
-    photo = db.BlobProperty()
-    mimetype = db.StringProperty()
-    date = db.DateTimeProperty(auto_now_add=True)
-    user = db.UserProperty()
-    box = db.StringProperty()
-    valid = db.BooleanProperty(default=False)
-
-    def get_absolute_url(self):
-        return self.get_photo_url()
-
-    def __unicode__(self):
-        return "%s-%s" % (self.user, self.photo)
-
-    class Admin:
-        pass
-
-    def save(self):
-
-        super(Avatar, self).save()
-
-        if self.valid:
-            for avatar in Avatar.all().filter("user = ", self.user).exclude(pk=self.pk):
-                avatar.delete()
-
 class Profile(db.Model):
     """
     User profile model
@@ -123,6 +95,9 @@ class Profile(db.Model):
     class Admin:
         pass
 
+    def avatar(self):
+        return "/profile/avatar/%s" % self.user
+
     def __unicode__(self):
         return _("%s's profile") % self.user
 
@@ -134,3 +109,32 @@ class Profile(db.Model):
 
     def yearsold(self):
         return (datetime.date.today().toordinal() - self.birthdate.toordinal()) / 365
+
+class Avatar(db.Model):
+    """
+    Avatar class. Every user can have one avatar associated.
+    """
+    photo = db.BlobProperty()
+    mimetype = db.StringProperty()
+    date = db.DateTimeProperty(auto_now_add=True)
+    box = db.StringProperty()
+    profile = db.ReferenceProperty(Profile)
+    valid = db.BooleanProperty(default=False)
+
+    def get_absolute_url(self):
+        return "/profile/avatar/%s/" % self.user
+
+    def __unicode__(self):
+        return "%s-%s" % (self.user, self.photo)
+
+    class Admin:
+        pass
+
+    def save(self):
+
+        super(Avatar, self).save()
+
+        if self.valid:
+            for avatar in Avatar.all().filter("user = ", self.user).exclude(pk=self.pk):
+                avatar.delete()
+

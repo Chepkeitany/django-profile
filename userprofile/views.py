@@ -114,6 +114,7 @@ def avatarChoose(request, template):
     if not request.method == "POST":
         form = AvatarForm()
     else:
+        profile = Profile.all().filter("user = ", user).get()
         form = AvatarForm(request.POST, request.FILES)
         if form.is_valid():
             for avatar in Avatar.all().filter("user = ", user).filter("valid = ", False):
@@ -122,7 +123,7 @@ def avatarChoose(request, template):
             photo = form.cleaned_data.get('photo')
             ext_mimetypes = { 'jpg': 'image/jpeg', 'gif': 'image/gif', 'png': 'image/png' }
             mimetype = ext_mimetypes.get(photo.filename.split(".")[-1])
-            avatar= Avatar(photo=photo.content, mimetype=mimetype, user=user)
+            avatar= Avatar(photo=photo.content, mimetype=mimetype, profile=profile)
             avatar.save()
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
@@ -152,10 +153,17 @@ def avatarCrop(request, avatar_id, template):
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
-def getavatar(request, avatar_id, size=None):
-    try:
-        Avatar.all().filter("id = ", id).get()
-    except:
+def getavatar(request, current_user, size=None):
+    for p in Profile.all():
+        if p.user.nickname() == current_user:
+            profile = p
+            current_user = p.user
+            break
+
+    if current_user:
+        avatar = Avatar.all().filter("profile = ", p).get()
+        return HttpResponse(avatar.photo, mimetype=avatar.mimetype)
+    else:
         return HttpResponseRedirect("/static/images/default.png")
 
 @login_required

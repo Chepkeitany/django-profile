@@ -30,12 +30,13 @@ div.content {
 }
 
 div.header {
-	background: #CCC;
+	background: #EFEFEF;
+	border: 4px solid #CCC;
 	padding: 10px;
 }
 
-div.header a {
-	color: white;
+div.header a:hover {
+	color: #444;
 }
 
 ul.menu {
