@@ -10,19 +10,3 @@ register = Library()
 @register.inclusion_tag('userprofile/usercard.html')
 def get_usercard(profile):
     return locals()
-
-@register.filter
-@stringfilter
-def avatar(email, width):
-    try:
-        user = users.User(email)
-        avatar = Avatar.filter("user=",user).get()
-        if avatar.get_photo_filename() and os.path.isfile(avatar.get_photo_filename()):
-            avatar_url = avatar.get_absolute_url()
-        else:
-            raise Exception()
-    except:
-        avatar_url = "%simages/default.gif" % settings.MEDIA_URL
-
-    path, extension = os.path.splitext(avatar_url)
-    return  "%s.%s%s" % (path, width, extension)

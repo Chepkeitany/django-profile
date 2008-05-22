@@ -1,11 +1,10 @@
 {% load i18n %}
-{% load userprofile_tags %}
 <div class="vcard usercard">
 	{% if profile.gender %}<img class="gender" src="{{ profile.get_genderimage_url }}" />{% endif %}
 	{% if profile %}
-		<a href="{{ profile.get_absolute_url }}"><img class="photo" src="{{ profile.user|avatar:"64" }}" alt="{{ profile.user }}"/></a>
+		<a href="{{ profile.get_absolute_url }}"><img class="photo" width="96" height="96" src="{{ profile.avatar }}" alt="{{ profile.user }}"/></a>
 	{% else %}
-		<a href="{{ profile.get_absolute_url }}"><img class="photo" src="{{ profile.user|avatar:"64" }}" alt="{{ profile.user }}"/></a>
+		<a href="{{ profile.get_absolute_url }}"><img class="photo" width="96" height="96" src="{{ profileavatar }}" alt="{{ profile.user }}"/></a>
 	{% endif %}
 	<ul>
   	<li class="fn nickname"><strong>{% trans "Username" %}:</strong> {{ profile.user }}</li>

@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     (r'^avatar/delete/(?P<avatar_id>[0-9]+)/$', avatarDelete),
     (r'^avatar/choose/$', avatarChoose, {'template': 'userprofile/avatar_choose.html'}),
     (r'^avatar/crop/(?P<avatar_id>[0-9]+)/$', avatarCrop, {'template': 'userprofile/avatar_crop.html'}),
+    (r'^avatar/(?P<current_user>[0-9a-zA-Z\.\-\@]+)/$', getavatar),
     (r'^getcountry_info/(?P<lat>[0-9\.\-]+)/(?P<lng>[0-9\.\-]+)/$', fetch_geodata),
 
     # Public profile
