@@ -162,9 +162,10 @@ def getavatar(request, current_user, size=None):
 
     if current_user:
         avatar = Avatar.all().filter("profile = ", p).get()
-        return HttpResponse(avatar.photo, mimetype=avatar.mimetype)
-    else:
-        return HttpResponseRedirect("/static/images/default.png")
+        if avatar:
+            return HttpResponse(avatar.photo, mimetype=avatar.mimetype)
+        else:
+            return HttpResponseRedirect("/static/images/default.gif")
 
 @login_required
 def avatarDelete(request, avatar_id=False):
