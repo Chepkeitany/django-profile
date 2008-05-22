@@ -17,7 +17,7 @@
 		// We can't use jquery.ready() because it doesn't wait to images.
 		$(window).bind("load", function() {
  			window.resizeTo(410, 450);
-			$("div.hidden-image").crop($("div.hidden-image img.crop"), { 'action': '/profile/avatar/crop/{{ avatar.pk }}/', 'warningThreshold': { x: 1, y: 1 } });
+			$("div.hidden-image").crop($("div.hidden-image img.crop"), { 'action': '/profile/avatar/crop/{{ avatar.key }}/', 'warningThreshold': { x: 1, y: 1 } });
 		});
 	</script>
 	{% endif %}
@@ -25,8 +25,8 @@
 <body>
   {% if avatar.photo %}
 	<p class="title">
-		<a class="another" href="/profile/avatar/delete/{{ avatar.pk }}/">{% trans 'Select anoter image' %}</a>
-		<a class="cancel" href="/profile/avatar/delete/{{ avatar.pk }}/">{% trans 'Cancel' %}</a>
+		<a class="another" href="/profile/avatar/delete/{{ avatar.key }}/">{% trans 'Select anoter image' %}</a>
+		<a class="cancel" href="/profile/avatar/delete/{{ avatar.key }}/">{% trans 'Cancel' %}</a>
 	</p>
 	<div class="hidden-image"><img src="{{ avatar.get_absolute_url }}" class="crop"/></div>
 	{% else %}

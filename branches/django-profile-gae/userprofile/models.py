@@ -122,19 +122,10 @@ class Avatar(db.Model):
     valid = db.BooleanProperty(default=False)
 
     def get_absolute_url(self):
-        return "/profile/avatar/%s/" % self.user
+        return "/profile/avatarkey/%s/" % self.key().__str__()
 
     def __unicode__(self):
         return "%s-%s" % (self.user, self.photo)
 
     class Admin:
         pass
-
-    def save(self):
-
-        super(Avatar, self).save()
-
-        if self.valid:
-            for avatar in Avatar.all().filter("user = ", self.user).exclude(pk=self.pk):
-                avatar.delete()
-

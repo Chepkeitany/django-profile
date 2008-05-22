@@ -29,6 +29,9 @@ APIKEY = "ABQIAAAA06IJoYHDPFMx4u3hTtaghxTU2QkCNWGFpwxhhQnHf-7Pc6f1lBTQWFSuWvEBhZ
 # Haddock
 APIKEY="ABQIAAAA06IJoYHDPFMx4u3hTtaghxS1mGAeXhF8eEwoOC3WUqD9xSVHbhT_wvgbriWemZzoPwFT5-HqnLJ9-A"
 
+# django-profile.appspot.com
+APIKEY="ABQIAAAA06IJoYHDPFMx4u3hTtaghxTgGHawVmFK-PeSfwKit_FZRDle2xRzLAGoZFdyMnOf82PdGvr_wAGehg"
+
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'appengine'  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
