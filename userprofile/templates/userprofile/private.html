@@ -78,7 +78,7 @@
 				{% for continent,countries in country_data.items %}
 					<option value="" disabled="disabled">{{ continent }}</option>
 					{% for country in countries %}
-					<option value="{{ country.key }}" {% ifequal profile.country country%}selected="selected"{% endifequal %}>{{ country }}</option>
+					<option value="{{ country.key }}" {% ifequal profile.country.name country.name %}selected="selected"{% endifequal %}>{{ country }}</option>
 					{% endfor %}
 				{% endfor %}
 			</select>
