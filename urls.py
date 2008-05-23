@@ -8,7 +8,7 @@ def get_current_user():
 
 urlpatterns = patterns('',
     # Demo FrontPage
-    (r'^$', direct_to_template, {'extra_context': { 'user': get_current_user(), 'profiles': Profile.all() }, 'template': 'front.html' }),
+    (r'^$', direct_to_template, {'extra_context': { 'user': get_current_user, 'profiles': Profile.all() }, 'template': 'front.html' }),
 
     # Profile application
     (r'^profile/', include('userprofile.urls')),
