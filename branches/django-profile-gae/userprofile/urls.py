@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     # Private profile
     (r'^$', private, {'APIKEY': settings.APIKEY, 'template': 'userprofile/private.html'}),
     (r'^save/$', save),
+    (r'^logout/$', logout),
     (r'^delete/$', delete, {'template': 'userprofile/delete.html'}),
     (r'^delete/done/$', direct_to_template, {'template': 'userprofile/delete_done.html'}),
     (r'^avatar/delete/$', avatarDelete),

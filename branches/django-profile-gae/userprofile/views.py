@@ -28,6 +28,11 @@ def login_required(func):
     return _wrapper
 
 @login_required
+def logout(request):
+    user = users.get_current_user()
+    return HttpResponseRedirect(users.create_logout_url("/"))
+
+@login_required
 def fetch_geodata(request, lat, lng):
     user = users.get_current_user()
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
