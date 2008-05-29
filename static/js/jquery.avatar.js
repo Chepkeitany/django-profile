@@ -12,7 +12,6 @@ $(function() {
 	});
 
 	$("#id_photo").change(function() {
-		$("div.loading").show();
 		$("form").submit();
 	});
 
