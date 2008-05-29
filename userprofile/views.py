@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response
 from google.appengine.api import users
+from google.appengine.api import images
 from google.appengine.ext.db import get
 from django.http import HttpResponseRedirect, HttpResponse
 from userprofile.forms import ProfileForm, AvatarForm, AvatarCropForm
@@ -152,15 +153,22 @@ def avatarCrop(request, key, template):
         left = int(request.POST.get('left'))
         right = int(request.POST.get('right'))
         bottom = int(request.POST.get('bottom'))
+        width = int(request.POST.get('width'))
+        height = int(request.POST.get('height'))
         if top < 0: top = 0
         if left < 0: left = 0
-        avatar.box = "%s-%s-%s-%s" % ( int(left), int(top), int(right), int(bottom))
+        avatar.box = "%s-%s-%s-%s" % ( float(left), float(top), float(right), float(bottom))
+        avatar.photo = images.crop(avatar.photo, float(left)/width, float(top)/height, float(right)/width, float(bottom)/height)
+        avatar.photo96 = images.resize(avatar.photo, 96)
+        avatar.photo64 = images.resize(avatar.photo, 64)
+        avatar.photo32 = images.resize(avatar.photo, 32)
+        avatar.photo16 = images.resize(avatar.photo, 16)
         avatar.save()
         done = True
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
-def getavatar(request, current_user=None, key=None, size=None):
+def getavatar(request, current_user=None, key=None, size=96):
     if current_user:
         for p in Profile.all():
             if p.user.nickname() == current_user:
@@ -171,7 +179,7 @@ def getavatar(request, current_user=None, key=None, size=None):
         if current_user:
             avatar = Avatar.all().filter("profile = ", p).filter("valid = ", True).get()
             if avatar:
-                return HttpResponse(avatar.photo, mimetype=avatar.mimetype)
+                return HttpResponse(getattr(avatar, "photo%s" % size), mimetype=avatar.mimetype)
             else:
                 return HttpResponseRedirect("/static/images/default.gif")
     elif key:

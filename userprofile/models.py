@@ -95,7 +95,7 @@ class Profile(db.Model):
     class Admin:
         pass
 
-    def avatar(self):
+    def avatar(self, size=96):
         return "/profile/avatar/%s" % self.user
 
     def __unicode__(self):
@@ -115,6 +115,10 @@ class Avatar(db.Model):
     Avatar class. Every user can have one avatar associated.
     """
     photo = db.BlobProperty()
+    photo96 = db.BlobProperty()
+    photo64 = db.BlobProperty()
+    photo32 = db.BlobProperty()
+    photo16 = db.BlobProperty()
     mimetype = db.StringProperty()
     date = db.DateTimeProperty(auto_now_add=True)
     box = db.StringProperty()

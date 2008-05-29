@@ -27,7 +27,7 @@
 <h1>Public profile of {{ profile.user }}</h1>
 <div class="vcard">
 	<ul>
-		<li><img width="96" height="96" src="{{ profile.avatar }}" /></li>
+		<li><img src="{{ profile.avatar }}" /></li>
   	<li>{% trans "Username" %}: {{ profile.user }}</li>
 		{% if profile.firstname %}<li>{% trans "Name" %}: {{ profile.firstname }} {{ profile.surname }}</li>{% endif %}
   	{% if profile.url %}<li>{% trans "Url" %}: <a href="{{ profile.url }}">{{ profile.url }}</a></li>{% endif %}

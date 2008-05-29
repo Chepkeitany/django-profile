@@ -36,6 +36,8 @@ jQuery.fn.crop = function(image, opts) {
     var selectionSize = jQuery("<div class='size'></div>");
     var form = jQuery("" + 
       "<form method='post' action='" + o.action + "'>" +
+      "  <input type='hidden' name='width' value='" + dimensions.width + "'/>" +
+      "  <input type='hidden' name='height' value='" + dimensions.height + "'/>" +
       "  <input type='hidden' name='image' value='" + imageSource + "'/>" +
       "  <input type='hidden' name='top' value='-10'/>" +
       "  <input type='hidden' name='bottom' value='-10'/>" +
