@@ -4,20 +4,13 @@
 <head>
 	<title>{% trans "Change avatar" %}</title>
   <link rel="stylesheet" href="{{ MEDIA_URL }}css/avatar.css" type="text/css" />
-  <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery.crop.css" type="text/css" />
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.3.pack.js"></script>
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.dimensions.js"></script>
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.crop.js"></script>
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/ui.mouse.js"></script>
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/ui.draggable.js"></script>
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/ui.draggable.ext.js"></script>
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.imgareaselect-0.4.2.min.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.avatar.js"></script>
 	{% if avatar %}
 	<script type="text/javascript">
-		// We can't use jquery.ready() because it doesn't wait for images.
-		$(window).bind("load", function() {
- 			window.resizeTo(410, 450);
-			$("div.hidden-image").crop($("div.hidden-image img.crop"), { 'action': '/profile/avatar/crop/{{ avatar.key }}/', 'warningThreshold': { x: 1, y: 1 } });
+	$(function() {
+			$("#cropimage").imgAreaSelect({ aspectRatio: "1:1" });
 		});
 	</script>
 	{% endif %}
@@ -28,7 +21,7 @@
 		<a class="another" href="/profile/avatar/delete/{{ avatar.key }}/">{% trans 'Select anoter image' %}</a>
 		<a class="cancel" href="/profile/avatar/delete/{{ avatar.key }}/">{% trans 'Cancel' %}</a>
 	</p>
-	<div class="hidden-image"><img src="{{ avatar.get_absolute_url }}" class="crop"/></div>
+	<img src="{{ avatar.get_absolute_url }}" id="cropimage"/>
 	{% else %}
 	<p class="title" style="border: 1px solid;">{% trans "Select the image file from your computer you want to assign as your avatar in your profile:" %}</p>
   <form class="commonform" action="" method="post" enctype="multipart/form-data">
