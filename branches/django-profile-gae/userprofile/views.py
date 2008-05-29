@@ -147,6 +147,10 @@ def avatarCrop(request, key, template):
 
     form = AvatarCropForm(request.POST)
     if form.is_valid():
+        for avatar in Avatar.all().filter("profile = ", profile):
+            avatar.valid = False
+            avatar.save()
+
         avatar = get(key)
         avatar.valid = True
         top = int(request.POST.get('top'))
@@ -165,6 +169,9 @@ def avatarCrop(request, key, template):
         avatar.photo16 = images.resize(avatar.photo, 16)
         avatar.save()
         done = True
+
+        for avatar in Avatar.all().filter("profile = ", profile).filter("valid = ", False):
+            avatar.delete()
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 

@@ -5,12 +5,45 @@
 	<title>{% trans "Change avatar" %}</title>
   <link rel="stylesheet" href="{{ MEDIA_URL }}css/avatar.css" type="text/css" />
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.3.pack.js"></script>
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.dimensions.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.imgareaselect-0.4.2.min.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.avatar.js"></script>
 	{% if avatar %}
 	<script type="text/javascript">
 	$(function() {
-			$("#cropimage").imgAreaSelect({ aspectRatio: "1:1" });
+			function updateValues(img, selection) {
+				$("input[name='left']").val(selection.x1);	
+				$("input[name='top']").val(selection.y1);	
+				$("input[name='right']").val(selection.x2);	
+				$("input[name='bottom']").val(selection.y2);	
+			}
+
+			$(window).load(function() {
+
+				if ($("#cropimage").height() > $("#cropimage").width()) {
+					if ($("#cropimage").height() > 300) {
+						$("#cropimage").css("height", "300px");
+					}
+				} else {
+					if ($("#cropimage").width() > 400) {
+						$("#cropimage").css("width", "400px");
+					}
+				}
+
+				$("input[name='width']").val($("#cropimage").width());
+				$("input[name='height']").val($("#cropimage").height());
+				$("a.done").click(function() {
+					$("form").submit();
+					return false;
+				});
+
+				if ($("#cropimage").width() < 200 || $("#cropimage").height() < 200) {
+					window.resizeTo(300, 300);
+				} else {
+					window.resizeTo($("#cropimage").width() + 10, $("#cropimage").height() + 90);
+				}
+				$("#cropimage").imgAreaSelect({ aspectRatio: "1:1", onSelectEnd: updateValues });
+			});
 		});
 	</script>
 	{% endif %}
@@ -18,9 +51,19 @@
 <body>
   {% if avatar.photo %}
 	<p class="title">
-		<a class="another" href="/profile/avatar/delete/{{ avatar.key }}/">{% trans 'Select anoter image' %}</a>
+		<a class="done" style="margin-right: 20px;" href="{{ request.path }}">{% trans 'Done' %}</a>
+		<a class="another" style="margin-right: 20px;" href="/profile/avatar/delete/{{ avatar.key }}/">{% trans 'Select anoter image' %}</a>
 		<a class="cancel" href="/profile/avatar/delete/{{ avatar.key }}/">{% trans 'Cancel' %}</a>
 	</p>
+  <form method="post" action="/profile/avatar/crop/{{ avatar.key }}/">
+    <input type="hidden" name="width" value="0"/>
+    <input type="hidden" name="height" value="0"/>
+    <input type="hidden" name="top" value="0"/>
+    <input type="hidden" name="top" value="0"/>
+    <input type="hidden" name="bottom" value="0"/>
+    <input type="hidden" name="left" value="0"/>
+    <input type="hidden" name="right" value="0"/>
+  </form>
 	<img src="{{ avatar.get_absolute_url }}" id="cropimage"/>
 	{% else %}
 	<p class="title" style="border: 1px solid;">{% trans "Select the image file from your computer you want to assign as your avatar in your profile:" %}</p>
