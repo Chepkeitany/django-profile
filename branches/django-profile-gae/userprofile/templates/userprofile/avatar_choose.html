@@ -14,7 +14,7 @@
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.avatar.js"></script>
 	{% if avatar %}
 	<script type="text/javascript">
-		// We can't use jquery.ready() because it doesn't wait to images.
+		// We can't use jquery.ready() because it doesn't wait for images.
 		$(window).bind("load", function() {
  			window.resizeTo(410, 450);
 			$("div.hidden-image").crop($("div.hidden-image img.crop"), { 'action': '/profile/avatar/crop/{{ avatar.key }}/', 'warningThreshold': { x: 1, y: 1 } });
