@@ -54,10 +54,10 @@ def fetch_geodata(request, lat, lng):
 
 def public(request, APIKEY, current_user, template):
     profile = None
+    user = users.get_current_user()
     for p in Profile.all():
         if p.user.nickname() == current_user:
             profile = p
-            user = p.user
             break
 
     if not profile:
