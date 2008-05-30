@@ -93,7 +93,7 @@ $(function(){
 
 	// Click on the save button
 	$("input[@type=button].save").click(function() {
-		$("img.saving").attr("src", "/static/images/loading3.png");
+		$("img.saving").attr("src", "/static/images/loading2.gif");
 		$("img.saving").show();
 		$.post("/profile/save/", $("form").serialize(), function(data) {
 			if (data.success) {
