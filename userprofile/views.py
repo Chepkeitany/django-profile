@@ -90,9 +90,14 @@ def save(request):
     user = users.get_current_user()
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method=="POST":
         profile = Profile.all().filter("user = ", user).get()
-        form = ProfileForm(request.POST, instance=profile)
+        form = ProfileForm(data=request.POST, instance=profile)
         if form.is_valid():
             profile = form.save(commit=False)
+            if not form.cleaned_data.get("country"):
+                profile.country = None
+                profile.location = None
+                profile.geopoint = None
+
             public = dict()
             for item in profile.__dict__.get("_entity").keys() + [ 'avatar', 'nickname', 'email' ]:
                 if request.POST.has_key("%s_public" % item):

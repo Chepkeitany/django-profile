@@ -93,6 +93,7 @@ class Profile(db.Model):
     public = db.BlobProperty()
     country = db.ReferenceProperty(Country)
     location = db.StringProperty()
+    visibility = db.BlobProperty()
 
     class Admin:
         pass
