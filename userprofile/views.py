@@ -94,7 +94,7 @@ def save(request):
         if form.is_valid():
             profile = form.save(commit=False)
             public = dict()
-            for item in profile.__dict__.get("_entity").keys():
+            for item in profile.__dict__.get("_entity").keys() + [ 'avatar', 'nickname', 'email' ]:
                 if request.POST.has_key("%s_public" % item):
                     public[item] = request.POST.get("%s_public" % item)
 

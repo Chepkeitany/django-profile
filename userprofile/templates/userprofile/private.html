@@ -27,7 +27,6 @@
 {% block content %}
 {% load userprofile_tags %}
 <h1>{% trans "Tell others something about you" %}</h1>
-{{ profile.visible }}
 <form class="commonform profile" action="" method="post" enctype="multipart/form-data">
   <fieldset>
 		<div class="save">
@@ -36,7 +35,7 @@
 		</div>
 		<div style="float: left; width: 100px;">{%  trans "Public info" %}</div>
 		<div>
-			<div style="float: left;"><input type="checkbox" name="username_public" {% if profile.visible.username %}checked="on"{% endif %}/></div>
+			<div style="float: left;"><input type="checkbox" name="nickname_public" {% if profile.visible.nickname %}checked="on"{% endif %}/></div>
     	<label for="id_username">{% trans "Nickname:" %}</label>
     	<strong id="id_username">{{ user }}</strong> 
 		</div>
