@@ -5,7 +5,6 @@
 {% if profile.geopoint and profile.visible.geopoint %}
 <script type="text/javascript" src="http://www.google.com/jsapi?key={{ APIKEY }}"></script>
 <script type="text/javascript">google.load("maps", "2");</script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.3.pack.js"></script>
 <script type="text/javascript">
 	$(function() {
   	if (google.maps.BrowserIsCompatible()) {
