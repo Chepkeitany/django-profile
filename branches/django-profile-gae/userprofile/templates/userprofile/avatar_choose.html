@@ -7,10 +7,9 @@
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.dimensions.pack.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.imgareaselect-0.4.2.min.js"></script>
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.avatar.js"></script>
-	{% if avatar %}
 	<script type="text/javascript">
 	$(function() {
+	{% if avatar %}
 			function updateValues(img, selection) {
 				$("input[name='left']").val(selection.x1);	
 				$("input[name='top']").val(selection.y1);	
@@ -44,9 +43,39 @@
 				}
 				$("#cropimage").imgAreaSelect({ aspectRatio: "1:1", onSelectEnd: updateValues });
 			});
+
+  		$("input[@type=button].cancel").click(function() {
+      	window.close();
+  		});
+
+      $("a.cancel").click(function() {
+        $.post($(this).attr("href"), function(data) {
+        	window.close();
+        });
+        return false;
+      });
+
+  		$("a.another").click(function() {
+    		$.post($(this).attr("href"), function(data) {
+        	window.resizeTo(410, 160);
+          window.location = "/profile/avatar/choose/";
+    		});
+        return false;
+  		});
+
+      $("input[@type=submit].buttondone").click(function() {
+      	var a = $("#child").position();
+        $("#id_top").val(a.top);
+        $("#id_left").val(a.left);
+        $("#id_size").val($("#child").height());
+  		});
+			{% endif %}
+
+      $("#id_photo").change(function() {
+        $("form").submit();
+      });
 		});
 	</script>
-	{% endif %}
 </head>
 <body>
   {% if avatar.photo %}
