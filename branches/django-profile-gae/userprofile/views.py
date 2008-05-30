@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from userprofile.forms import ProfileForm, AvatarForm, AvatarCropForm
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
+import pickle
 from django.utils import simplejson
 from userprofile.models import Avatar, Profile, Continent, Country
 from django.template import RequestContext
@@ -91,10 +92,18 @@ def save(request):
         profile = Profile.all().filter("user = ", user).get()
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
-            form.save()
-            return HttpResponse(simplejson.dumps({'success': True}))
+            profile = form.save(commit=False)
+            public = dict()
+            for item in profile.__dict__.get("_entity").keys():
+                if request.POST.has_key("%s_public" % item):
+                    public[item] = request.POST.get("%s_public" % item)
+
+            profile.public = pickle.dumps(public)
+            profile.save()
+
+            return HttpResponse(simplejson.dumps({ 'success': True }))
         else:
-            return HttpResponse(simplejson.dumps({'success': False }))
+            return HttpResponse(simplejson.dumps({ 'success': False }))
     else:
         raise Http404()
 

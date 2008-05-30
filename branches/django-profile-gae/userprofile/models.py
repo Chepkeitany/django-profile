@@ -2,6 +2,7 @@ from google.appengine.ext import db
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from django.conf import settings
+import pickle
 import datetime
 import os.path
 
@@ -89,11 +90,15 @@ class Profile(db.Model):
     about = db.TextProperty()
     geopoint = db.GeoPtProperty()
     gender = db.StringProperty()
+    public = db.BlobProperty()
     country = db.ReferenceProperty(Country)
     location = db.StringProperty()
 
     class Admin:
         pass
+
+    def visible(self):
+        return pickle.loads(self.public)
 
     def avatar(self, size=96):
         return "/profile/avatar/%s" % self.user
