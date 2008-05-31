@@ -27,9 +27,9 @@
 <div class="vcard">
 	<ul>
 		{% if profile.visible.avatar %}
-		<li><img src="{{ profile.avatar }}" /></li>
+		<li><img class="photo" src="{{ profile.avatar }}" /></li>
 		{% else %}
-		<li><img src="/static/images/default.96.png" /></li>
+		<li><img class="photo" src="/static/images/default.96.png" /></li>
 		{% endif %}
   	<li>{% trans "Username" %}: {{ profile.user }}</li>
   	{% if profile.user.email and profile.visible.email %}<li>{% trans "E-mail" %}: {{ profile.user.email }}</li>{% endif %}

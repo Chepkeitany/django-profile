@@ -20,7 +20,6 @@
 				<li><a href="/">{% trans "Frontpage" %}</a></li>
   			{% if user %}
 				<li><a href="/profile/">{% trans "Edit profile" %}</a></li>
-				<li><a href="{{ profile.get_absolute_url }}">{% trans "Your public profile" %}</a></li>
    			<li><a href="/profile/logout/">{% trans "Logout" %}</a></li>
 				{% else %} 
 				<li><a href="/profile/">{% trans "Login" %}</a></li>

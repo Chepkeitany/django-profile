@@ -101,7 +101,7 @@ class Profile(db.Model):
         return pickle.loads(self.public)
 
     def avatar(self, size=96):
-        return "/profile/avatar/%s" % self.user
+        return "/profile/avatar/%s/" % self.user
 
     def __unicode__(self):
         return _("%s's profile") % self.user
