@@ -15,13 +15,13 @@ div.usercard {
 	width: 250px;
 }
 
-div.vcard > ul {
+div.vcard ul {
 	list-style: none;
 	margin: 0px;
 	padding: 0px;
 }
 
-div.vcard > img.gender {
+div.vcard img.gender {
 	float: right;
 }
 
