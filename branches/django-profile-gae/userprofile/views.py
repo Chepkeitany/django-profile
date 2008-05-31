@@ -202,13 +202,13 @@ def getavatar(request, current_user=None, key=None, size=96):
             if avatar:
                 return HttpResponse(getattr(avatar, "photo%s" % size), mimetype=avatar.mimetype)
             else:
-                return HttpResponseRedirect("/static/images/default.gif")
+                return HttpResponseRedirect("%simages/default.png" % settings.MEDIA_URL)
     elif key:
         avatar = get(key)
         if avatar:
             return HttpResponse(avatar.photo, mimetype=avatar.mimetype)
         else:
-            return HttpResponseRedirect("/static/images/default.gif")
+            return HttpResponseRedirect("%simages/default.png")
 
 @login_required
 def avatarDelete(request, key=False):

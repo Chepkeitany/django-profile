@@ -1,8 +1,8 @@
 <html>
 <head>
   <script type="text/javascript">
+    window.opener.document.images.avatarimg.src = "{{ profile.avatar }}";
    	window.close();
-    window.opener.document.images['avatarimg'].src = "{{ profile.avatar }}";
   </script>
 </head>
 <body>

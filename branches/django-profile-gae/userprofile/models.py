@@ -6,7 +6,6 @@ import pickle
 import datetime
 import os.path
 
-AVATARSIZES = ( 128, 96, 64, 32, 16 )
 GENDER_CHOICES = ( ('F', _('Female')), ('M', _('Male')),)
 GENDER_IMAGES = { "M": "%simages/male.png" % settings.MEDIA_URL, "F": "%simages/female.png" % settings.MEDIA_URL }
 

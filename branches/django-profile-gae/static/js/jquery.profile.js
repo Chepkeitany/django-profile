@@ -159,7 +159,7 @@ $(function(){
   $("a.delavatar").click(function() {
     $.getJSON("/profile/avatar/delete/", function(data) {
 			if (data.success) {
-				$("img#avatarimg").attr("src", "/static/images/default.gif");
+				$("img#avatarimg").attr("src", "/static/images/default.png");
 			}
     });
 
