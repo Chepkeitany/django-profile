@@ -4,7 +4,7 @@
 	{% if profile.visible.avatar %}
 		<a href="{{ profile.get_absolute_url }}"><img class="photo" src="{{ profile.avatar }}" alt="{{ profile.user }}"/></a>
 	{% else %}
-		<img class="photo" src="/static/images/default.96.gif" alt="{% trans "Information not public" %}"/>
+		<img class="photo" src="/static/images/default.96.png" alt="{% trans "Information not public" %}"/>
 	{% endif %}
 	<ul>
   	<li class="fn nickname"><strong>{% trans "Username" %}:</strong> {% if profile.visible.nickname %}{{ profile.user }}{% else %}{% trans "Information not public" %}{% endif %}</li>
