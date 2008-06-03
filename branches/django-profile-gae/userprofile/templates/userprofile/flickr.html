@@ -1,0 +1,23 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>{% trans "Change avatar" %}</title>
+  <link rel="stylesheet" href="{{ MEDIA_URL }}css/avatar.css" type="text/css" />
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+			$("input[type='button']").click(function() {
+				$.post("{{ request.path }}", { 'search': $("input[type='text']").val() }, function(data) {
+					alert("hola");
+				}, "json");
+			});
+		});
+	</script>
+</head>
+<body>
+	<form action="">
+		<p class="title" style="border-bottom: 2px solid;">{% trans "Search on flickr:" %}<input type="text" value="" /><input type="button" value="{% trans "Search" %}"/></p>
+	</form>
+</body>
+</html>

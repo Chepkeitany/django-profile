@@ -34,6 +34,8 @@ APIKEY="ABQIAAAA06IJoYHDPFMx4u3hTtaghxTgGHawVmFK-PeSfwKit_FZRDle2xRzLAGoZFdyMnOf
 
 FLICKR_APIKEY="4a2403a843e91a18eb6f3264d2c6489d"
 
+MIMETYPES = { 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'gif': 'image/gif', 'png': 'image/png', }
+
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'appengine'  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
