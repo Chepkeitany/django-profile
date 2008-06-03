@@ -9,7 +9,11 @@
     $(function() {
 			$("input[type='button']").click(function() {
 				$.post("{{ request.path }}", { 'search': $("input[type='text']").val() }, function(data) {
-					alert("hola");
+					if (data.success) {
+						for (var photo in data.photos) {
+							$("div.photos").append('<img src="' + photo + '" />"');
+						}
+					}
 				}, "json");
 			});
 		});
@@ -19,5 +23,7 @@
 	<form action="">
 		<p class="title" style="border-bottom: 2px solid;">{% trans "Search on flickr:" %}<input type="text" value="" /><input type="button" value="{% trans "Search" %}"/></p>
 	</form>
+	<div class="photos">
+	</div>
 </body>
 </html>
