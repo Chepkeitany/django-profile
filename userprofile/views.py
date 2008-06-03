@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response
+from userprofile import flickr
 from google.appengine.api import users
-from google.appengine.api import images
+from google.appengine.api import images, urlfetch
 from google.appengine.ext.db import get
 from django.http import HttpResponseRedirect, HttpResponse
 from userprofile.forms import ProfileForm, AvatarForm, AvatarCropForm
@@ -17,7 +18,7 @@ import urllib
 from xml.dom import minidom
 import os
 
-IMSIZES = ( 128, 96, 64, 32, 24, 16 )
+flickr.API_KEY=settings.FLICKR_APIKEY
 
 def login_required(func):
     def _wrapper(request, *args, **kw):
@@ -127,6 +128,14 @@ def delete(request, template):
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
 @login_required
+def searchflickr(request, template):
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method=="POST" and request.POST.get('search'):
+        photos = flickr.photos_search(tags=request.POST.get('search'))
+        return HttpResponse(simplejson.dumps({'success': True}))
+    else:
+        return render_to_response(template, locals(), context_instance=RequestContext(request))
+
+@login_required
 def avatarChoose(request, template):
     """
     Avatar choose
@@ -142,10 +151,13 @@ def avatarChoose(request, template):
                 avatar.delete()
 
             photo = form.cleaned_data.get('photo')
-            ext_mimetypes = { 'jpg': 'image/jpeg', 'gif': 'image/gif', 'png': 'image/png' }
-            mimetype = ext_mimetypes.get(photo.filename.split(".")[-1])
-            avatar= Avatar(photo=photo.content, mimetype=mimetype, profile=profile)
+            url = form.cleaned_data.get('url')
+            if url:
+                photo = urlfetch.fetch(url)
+
+            avatar= Avatar(photo=photo.content, mimetype='image/png', profile=profile)
             avatar.save()
+
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
@@ -191,18 +203,22 @@ def avatarCrop(request, key, template):
 
 def getavatar(request, current_user=None, key=None, size=96):
     if current_user:
+        profile = None
         for p in Profile.all():
             if p.user.nickname() == current_user:
                 profile = p
                 current_user = p.user
                 break
 
-        if current_user:
+        if profile:
             avatar = Avatar.all().filter("profile = ", p).filter("valid = ", True).get()
             if avatar:
                 return HttpResponse(getattr(avatar, "photo%s" % size), mimetype=avatar.mimetype)
             else:
                 return HttpResponseRedirect("%simages/default.png" % settings.MEDIA_URL)
+        else:
+            raise Http404
+
     elif key:
         avatar = get(key)
         if avatar:

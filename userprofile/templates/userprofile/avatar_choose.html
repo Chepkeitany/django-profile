@@ -5,11 +5,11 @@
 	<title>{% trans "Change avatar" %}</title>
   <link rel="stylesheet" href="{{ MEDIA_URL }}css/avatar.css" type="text/css" />
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
+	{% if avatar %}
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.dimensions.pack.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.imgareaselect-0.4.2.min.js"></script>
 	<script type="text/javascript">
-	$(function() {
-	{% if avatar %}
+		$(function() {
 			function updateValues(img, selection) {
 				$("input[name='left']").val(selection.x1);	
 				$("input[name='top']").val(selection.y1);	
@@ -44,10 +44,6 @@
 				$("#cropimage").imgAreaSelect({ aspectRatio: "1:1", onSelectEnd: updateValues });
 			});
 
-  		$("input[@type=button].cancel").click(function() {
-      	window.close();
-  		});
-
       $("a.cancel").click(function() {
         $.post($(this).attr("href"), function(data) {
         	window.close();
@@ -57,7 +53,7 @@
 
   		$("a.another").click(function() {
     		$.post($(this).attr("href"), function(data) {
-        	window.resizeTo(410, 160);
+        	window.resizeTo(500, 420);
           window.location = "/profile/avatar/choose/";
     		});
         return false;
@@ -69,12 +65,14 @@
         $("#id_left").val(a.left);
         $("#id_size").val($("#child").height());
   		});
-			{% endif %}
-
-      $("#id_photo").change(function() {
-        $("form").submit();
-      });
-		});
+		{% else %}
+		<script type="text/javascript">
+			$(function() {
+      	$("#id_photo").change(function() {
+        	$("form").submit();
+      	});
+			});
+		{% endif %}
 	</script>
 </head>
 <body>
@@ -95,18 +93,26 @@
   </form>
 	<img src="{{ avatar.get_absolute_url }}" id="cropimage"/>
 	{% else %}
-	<p class="title" style="border: 1px solid;">{% trans "Select the image file from your computer you want to assign as your avatar in your profile:" %}</p>
+	<p class="title" style="border-bottom: 2px solid;">{% trans "You have 3 options to select the image file you want as avatar in your profile:" %}</p>
   <form class="commonform" action="" method="post" enctype="multipart/form-data">
-    <label for="id_avatar">{% trans "Avatar:" %}</label>
-    {{ form.photo }}
-    <input type="button" class="cancel" value="{% trans 'Cancel' %}" />
+		<ol>
+			<li>
+    		<label for="id_url">{% trans "Select an image from a remote URL:" %}</label>
+    		{{ form.url }}
+				<input type="submit" value="{% trans "Done" %}" />
+			</li>
+			<li>
+    		<label for="id_photo">{% trans "Select an image from disk:" %}</label>
+    		{{ form.photo }}
+			</li>
+			<li>
+				<a href="/profile/avatar/searchflickr">{% trans "Search for an image on Flickr" %}</a>
+			</li>
+		</ol>
   </form>
 	{% if form.errors %}
 	{{ form.errors }}
 	{% endif %}
-	<div class="loading">
-		<p><img src="{{ MEDIA_URL }}images/loading2.gif" /> {% trans "Please wait..." %}</p>
-	</div>
 	{% endif %}
 </body>
 </html>

@@ -852,7 +852,7 @@ def _doget(method, auth=False, **params):
     #another useful debug print statement
     #print url
     
-    xml = minidom.parse(urlfetch.fetch(url).content)
+    xml = minidom.parseString(urlfetch.fetch(url).content)
     data = unmarshal(xml)
     if not data.rsp.stat == 'ok':
         msg = "ERROR [%s]: %s" % (data.rsp.err.code, data.rsp.err.msg)
@@ -909,7 +909,7 @@ def _dopost(method, auth=False, **params):
     #print url
     #print payload
     
-    xml = minidom.parse(urlfetch.fetch(url, payload).content)
+    xml = minidom.parseString(urlfetch.fetch(url, payload).content)
     data = unmarshal(xml)
     if not data.rsp.stat == 'ok':
         msg = "ERROR [%s]: %s" % (data.rsp.err.code, data.rsp.err.msg)
