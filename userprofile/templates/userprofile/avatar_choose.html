@@ -9,71 +9,73 @@
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.dimensions.pack.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.imgareaselect-0.4.2.min.js"></script>
 	<script type="text/javascript">
-		$(function() {
-			function updateValues(img, selection) {
-				$("input[name='left']").val(selection.x1);	
-				$("input[name='top']").val(selection.y1);	
-				$("input[name='right']").val(selection.x2);	
-				$("input[name='bottom']").val(selection.y2);	
+	$(function() {
+		function updateValues(img, selection) {
+			$("input[name='left']").val(selection.x1);	
+			$("input[name='top']").val(selection.y1);	
+			$("input[name='right']").val(selection.x2);	
+			$("input[name='bottom']").val(selection.y2);	
+		}
+
+		$(window).load(function() {
+
+			if ($("#cropimage").height() > $("#cropimage").width()) {
+				if ($("#cropimage").height() > 300) {
+					$("#cropimage").css("height", "300px");
+				}
+			} else {
+				if ($("#cropimage").width() > 400) {
+					$("#cropimage").css("width", "400px");
+				}
 			}
 
-			$(window).load(function() {
-
-				if ($("#cropimage").height() > $("#cropimage").width()) {
-					if ($("#cropimage").height() > 300) {
-						$("#cropimage").css("height", "300px");
-					}
-				} else {
-					if ($("#cropimage").width() > 400) {
-						$("#cropimage").css("width", "400px");
-					}
-				}
-
-				$("input[name='width']").val($("#cropimage").width());
-				$("input[name='height']").val($("#cropimage").height());
-				$("a.done").click(function() {
-					$("form").submit();
-					return false;
-				});
-
-				if ($("#cropimage").width() < 200 || $("#cropimage").height() < 200) {
-					window.resizeTo(300, 300);
-				} else {
-					window.resizeTo($("#cropimage").width() + 10, $("#cropimage").height() + 90);
-				}
-				$("#cropimage").imgAreaSelect({ aspectRatio: "1:1", onSelectEnd: updateValues });
+			$("input[name='width']").val($("#cropimage").width());
+			$("input[name='height']").val($("#cropimage").height());
+			$("a.done").click(function() {
+				$("form").submit();
+				return false;
 			});
 
-      $("a.cancel").click(function() {
-        $.post($(this).attr("href"), function(data) {
-        	window.close();
-        });
-        return false;
+			if ($("#cropimage").width() < 200 || $("#cropimage").height() < 200) {
+				window.resizeTo(300, 300);
+			} else {
+				window.resizeTo($("#cropimage").width() + 10, $("#cropimage").height() + 90);
+			}
+			$("#cropimage").imgAreaSelect({ aspectRatio: "1:1", onSelectEnd: updateValues });
+		});
+
+    $("a.cancel").click(function() {
+      $.post($(this).attr("href"), function(data) {
+      	window.close();
       });
+      return false;
+    });
 
-  		$("a.another").click(function() {
-    		$.post($(this).attr("href"), function(data) {
-        	window.resizeTo(500, 420);
-          window.location = "/profile/avatar/choose/";
-    		});
-        return false;
-  		});
+  	$("a.another").click(function() {
+   		$.post($(this).attr("href"), function(data) {
+      	window.resizeTo(500, 420);
+        window.location = "/profile/avatar/choose/";
+   		});
+      return false;
+		});
 
-      $("input[@type=submit].buttondone").click(function() {
-      	var a = $("#child").position();
-        $("#id_top").val(a.top);
-        $("#id_left").val(a.left);
-        $("#id_size").val($("#child").height());
-  		});
-		{% else %}
-		<script type="text/javascript">
-			$(function() {
-      	$("#id_photo").change(function() {
-        	$("form").submit();
-      	});
-			});
-		{% endif %}
+		$("input[@type=submit].buttondone").click(function() {
+     	var a = $("#child").position();
+       $("#id_top").val(a.top);
+       $("#id_left").val(a.left);
+       $("#id_size").val($("#child").height());
+ 		});
+	});
 	</script>
+	{% else %}
+	<script type="text/javascript">
+		$(function() {
+     	$("#id_photo").change(function() {
+       	$("form").submit();
+     	});
+		});
+	</script>
+	{% endif %}
 </head>
 <body>
   {% if avatar.photo %}

@@ -7,23 +7,41 @@
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
   <script type="text/javascript">
     $(function() {
-			$("input[type='button']").click(function() {
-				$.post("{{ request.path }}", { 'search': $("input[type='text']").val() }, function(data) {
-					if (data.success) {
-						for (var photo in data.photos) {
-							$("div.photos").append('<img src="' + photo + '" />"');
+			$("input[type='text']").focus();
+			$("form#flickr").submit(function() {
+				$("img#loading").show();
+				$("div.photos").html('');
+				if ($("input[type='text']").val()) {
+					$.post("{{ request.path }}", { 'search': $("input[type='text']").val() }, function(data) {
+						if (data.success) {
+							for (var photo in data.photos) {
+								$("div.photos").append('<a href="' + data.urls[photo] + '"><img src="' + data.photos[photo] + '" /></a>');
+							}
+							$("div.photos a").click(function() {
+								$("form#avatar input[name='url']").val($(this).attr("href"));
+								$("form#avatar").submit();
+								return false;	
+							});
 						}
-					}
-				}, "json");
+						$("img#loading").hide();
+					}, "json");
+				}
+				return false;
+			});
+			$("input[name='cancel']").click(function() {
+				window.location="/profile/avatar/choose/";
 			});
 		});
 	</script>
 </head>
 <body>
-	<form action="">
-		<p class="title" style="border-bottom: 2px solid;">{% trans "Search on flickr:" %}<input type="text" value="" /><input type="button" value="{% trans "Search" %}"/></p>
+	<form action="" id="flickr">
+		<p class="title" style="border-bottom: 2px solid;">{% trans "Search on flickr:" %} <input type="text" value="" /> <input type="submit" value="{% trans "Search" %}"/> <input type="button" name="cancel" value="{% trans "Cancel" %}" /> <img id="loading" style="display: none;" src="/static/images/loading.gif" /></p>
 	</form>
 	<div class="photos">
 	</div>
+	<form id="avatar" action="/profile/avatar/choose/" method="POST">
+		<input type="hidden" name="url" value="" />
+	</form>
 </body>
 </html>

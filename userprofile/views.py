@@ -130,8 +130,12 @@ def delete(request, template):
 @login_required
 def searchflickr(request, template):
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method=="POST" and request.POST.get('search'):
-        photos = [ photo.getURL(size='Square', urlType='source') for photo in flickr.photos_search(tags=request.POST.get('search'))[:10] ]
-        return HttpResponse(simplejson.dumps({'success': True, 'photos': photos}))
+        photos = list()
+        urls = list()
+        for photo in flickr.photos_search(tags=request.POST.get('search'))[:10]:
+            photos.append("http://farm%s.static.flickr.com/%s/%s_%s_s.jpg" % ( photo.farm, photo.server, photo.id, photo.secret ))
+            urls.append("http://farm%s.static.flickr.com/%s/%s_%s_b.jpg" % ( photo.farm, photo.server, photo.id, photo.secret ))
+        return HttpResponse(simplejson.dumps({'success': True, 'photos': photos, 'urls': urls }))
     else:
         return render_to_response(template, locals(), context_instance=RequestContext(request))
 

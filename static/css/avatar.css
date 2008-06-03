@@ -37,3 +37,12 @@ div.loading > p {
 	padding: 0px;
 	margin: 0px;
 }
+
+div.photos img {
+	border: 5px solid white;
+}
+
+div.photos img:hover {
+	border: 5px solid #CCC;
+}
+
