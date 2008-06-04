@@ -95,7 +95,7 @@ class Profile(db.Model):
     visibility = db.BlobProperty()
 
     # Avatar zone
-    avatar_temp = db.BlobProperty()
+    avatartemp = db.BlobProperty()
     avatar = db.BlobProperty()
     avatar96 = db.BlobProperty()
     avatar64 = db.BlobProperty()

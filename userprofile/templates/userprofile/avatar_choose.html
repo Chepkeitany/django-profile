@@ -5,7 +5,7 @@
 	<title>{% trans "Change avatar" %}</title>
   <link rel="stylesheet" href="{{ MEDIA_URL }}css/avatar.css" type="text/css" />
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
-	{% if profile.avatar_temp %}
+	{% if profile.avatartemp %}
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.dimensions.pack.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.imgareaselect-0.4.2.min.js"></script>
 	<script type="text/javascript">
@@ -78,7 +78,7 @@
 	{% endif %}
 </head>
 <body>
-  {% if profile.avatar_temp %}
+  {% if profile.avatartemp %}
 	<p class="title">
 		<a class="done" style="margin-right: 20px;" href="{{ request.path }}">{% trans 'Done' %}</a>
 		<a class="another" style="margin-right: 20px;" href="/profile/avatartemp/delete/">{% trans 'Select anoter image' %}</a>
