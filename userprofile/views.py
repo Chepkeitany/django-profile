@@ -9,7 +9,7 @@ from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 import pickle
 from django.utils import simplejson
-from userprofile.models import Avatar, Profile, Continent, Country
+from userprofile.models import Profile, Continent, Country
 from django.template import RequestContext
 from google.appengine.api.urlfetch import fetch
 from django.conf import settings
@@ -120,8 +120,6 @@ def delete(request, template):
         # Remove the profile
         for profile in Profile.all().filter("user = ", user):
             profile.delete()
-        for avatar in Avatar.all().filter("user = ", user):
-            avatar.delete()
 
         return HttpResponseRedirect('%sdone/' % request.path)
 
@@ -133,8 +131,10 @@ def searchflickr(request, template):
         photos = list()
         urls = list()
         for photo in flickr.photos_search(tags=request.POST.get('search'))[:10]:
-            photos.append("http://farm%s.static.flickr.com/%s/%s_%s_s.jpg" % ( photo.farm, photo.server, photo.id, photo.secret ))
-            urls.append("http://farm%s.static.flickr.com/%s/%s_%s_b.jpg" % ( photo.farm, photo.server, photo.id, photo.secret ))
+            photos.append(photo.getURL(size='Square', urlType='source'))
+            urls.append(photo.getURL(size='Medium', urlType='source'))
+            #photos.append("http://farm%s.static.flickr.com/%s/%s_%s_s.jpg" % ( photo.farm, photo.server, photo.id, photo.secret ))
+            #urls.append("http://farm%s.static.flickr.com/%s/%s_%s_b.jpg" % ( photo.farm, photo.server, photo.id, photo.secret ))
         return HttpResponse(simplejson.dumps({'success': True, 'photos': photos, 'urls': urls }))
     else:
         return render_to_response(template, locals(), context_instance=RequestContext(request))
@@ -151,22 +151,19 @@ def avatarChoose(request, template):
         profile = Profile.all().filter("user = ", user).get()
         form = AvatarForm(request.POST, request.FILES)
         if form.is_valid():
-            for avatar in Avatar.all().filter("user = ", user).filter("valid = ", False):
-                avatar.delete()
-
             photo = form.cleaned_data.get('photo')
             url = form.cleaned_data.get('url')
             if url:
                 photo = urlfetch.fetch(url)
 
-            avatar= Avatar(photo=photo.content, mimetype='image/png', profile=profile)
-            avatar.save()
+            profile.avatar_temp = photo.content
+            profile.save()
 
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
 @login_required
-def avatarCrop(request, key, template):
+def avatarCrop(request, template):
     """
     Avatar management
     """
@@ -177,12 +174,6 @@ def avatarCrop(request, key, template):
 
     form = AvatarCropForm(request.POST)
     if form.is_valid():
-        for avatar in Avatar.all().filter("profile = ", profile):
-            avatar.valid = False
-            avatar.save()
-
-        avatar = get(key)
-        avatar.valid = True
         top = int(request.POST.get('top'))
         left = int(request.POST.get('left'))
         right = int(request.POST.get('right'))
@@ -191,59 +182,52 @@ def avatarCrop(request, key, template):
         height = int(request.POST.get('height'))
         if top < 0: top = 0
         if left < 0: left = 0
-        avatar.box = "%s-%s-%s-%s" % ( float(left), float(top), float(right), float(bottom))
-        avatar.photo = images.crop(avatar.photo, float(left)/width, float(top)/height, float(right)/width, float(bottom)/height)
-        avatar.photo96 = images.resize(avatar.photo, 96)
-        avatar.photo64 = images.resize(avatar.photo, 64)
-        avatar.photo32 = images.resize(avatar.photo, 32)
-        avatar.photo16 = images.resize(avatar.photo, 16)
-        avatar.save()
+        profile.box = "%s-%s-%s-%s" % ( float(left), float(top), float(right), float(bottom))
+        profile.avatar = images.crop(profile.avatar_temp, float(left)/width, float(top)/height, float(right)/width, float(bottom)/height)
+        profile.avatar96 = images.resize(profile.avatar, 96)
+        profile.avatar64 = images.resize(profile.avatar, 64)
+        profile.avatar32 = images.resize(profile.avatar, 32)
+        profile.avatar16 = images.resize(profile.avatar, 16)
+        profile.save()
         done = True
-
-        for avatar in Avatar.all().filter("profile = ", profile).filter("valid = ", False):
-            avatar.delete()
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
-def getavatar(request, current_user=None, key=None, size=96):
+def getavatar(request, current_user=None, temp=None, size=96):
     if current_user:
         profile = None
         for p in Profile.all():
             if p.user.nickname() == current_user:
                 profile = p
-                current_user = p.user
                 break
 
         if profile:
-            avatar = Avatar.all().filter("profile = ", p).filter("valid = ", True).get()
-            if avatar:
-                return HttpResponse(getattr(avatar, "photo%s" % size), mimetype=avatar.mimetype)
+            if profile.avatar:
+                return HttpResponse(getattr(profile, "avatar%s" % size), mimetype="image/png")
             else:
                 return HttpResponseRedirect("%simages/default.png" % settings.MEDIA_URL)
         else:
+            return Http404
+
+    elif temp:
+        user = users.get_current_user()
+        profile = Profile.all().filter("user = ", user).get()
+        if profile.avatar_temp:
+            return HttpResponse(profile.avatar_temp, mimetype="image/png")
+        else:
             raise Http404
 
-    elif key:
-        avatar = get(key)
-        if avatar:
-            return HttpResponse(avatar.photo, mimetype=avatar.mimetype)
-        else:
-            return HttpResponseRedirect("%simages/default.png")
-
 @login_required
-def avatarDelete(request, key=False):
+def avatarDelete(request, temp=None):
     user = users.get_current_user()
     profile = Profile.all().filter("user = ", user).get()
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-        if key:
-            avatar = get(key)
-            avatar.delete()
+        if temp:
+            profile.avatar_temp=None
         else:
-            try:
-                for avatar in Avatar.all().filter("profile = ", profile):
-                    avatar.delete()
-            except:
-                pass
+            for key in [ '', '_temp', '16', '32', '64', '96' ]:
+                setattr(profile, "avatar%s" % key, None)
+        profile.save()
         return HttpResponse(simplejson.dumps({'success': True}))
     else:
         raise Http404()
