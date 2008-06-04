@@ -5,7 +5,7 @@
 	<title>{% trans "Change avatar" %}</title>
   <link rel="stylesheet" href="{{ MEDIA_URL }}css/avatar.css" type="text/css" />
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
-	{% if avatar %}
+	{% if profile.avatar_temp %}
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.dimensions.pack.js"></script>
   <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.imgareaselect-0.4.2.min.js"></script>
 	<script type="text/javascript">
@@ -78,13 +78,13 @@
 	{% endif %}
 </head>
 <body>
-  {% if avatar.photo %}
+  {% if profile.avatar_temp %}
 	<p class="title">
 		<a class="done" style="margin-right: 20px;" href="{{ request.path }}">{% trans 'Done' %}</a>
-		<a class="another" style="margin-right: 20px;" href="/profile/avatar/delete/{{ avatar.key }}/">{% trans 'Select anoter image' %}</a>
-		<a class="cancel" href="/profile/avatar/delete/{{ avatar.key }}/">{% trans 'Cancel' %}</a>
+		<a class="another" style="margin-right: 20px;" href="/profile/avatartemp/delete/">{% trans 'Select anoter image' %}</a>
+		<a class="cancel" href="/profile/avatartemp/delete/">{% trans 'Cancel' %}</a>
 	</p>
-  <form method="post" action="/profile/avatar/crop/{{ avatar.key }}/">
+  <form method="post" action="/profile/avatar/crop/">
     <input type="hidden" name="width" value="0"/>
     <input type="hidden" name="height" value="0"/>
     <input type="hidden" name="top" value="0"/>
@@ -93,7 +93,7 @@
     <input type="hidden" name="left" value="0"/>
     <input type="hidden" name="right" value="0"/>
   </form>
-	<img src="{{ avatar.get_absolute_url }}" id="cropimage"/>
+	<img src="/profile/getavatartemp/" id="cropimage" />
 	{% else %}
 	<p class="title" style="border-bottom: 2px solid;">{% trans "You have 3 options to select the image file you want as avatar in your profile:" %}</p>
   <form class="commonform" action="" method="post" enctype="multipart/form-data">

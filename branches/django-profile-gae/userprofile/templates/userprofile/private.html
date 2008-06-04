@@ -49,7 +49,7 @@
    		<label for="id_avatar">{% trans "Avatar:" %}</label>
 			<div class="avatar">
 				<a class="newavatar img" href="/profile/avatar/choose/">
-     			<img id="avatarimg" src="{{ profile.avatar }}" />
+     			<img id="avatarimg" src="{{ profile.getavatar }}" />
 				</a>
    			<a class="newavatar" href="/profile/avatar/choose/">{% trans "Change" %}</a> <a class="delavatar" href="/profile/avatar/delete">{% trans "Delete" %}</a>
 			</div>

@@ -94,14 +94,23 @@ class Profile(db.Model):
     location = db.StringProperty()
     visibility = db.BlobProperty()
 
+    # Avatar zone
+    avatar_temp = db.BlobProperty()
+    avatar = db.BlobProperty()
+    avatar96 = db.BlobProperty()
+    avatar64 = db.BlobProperty()
+    avatar32 = db.BlobProperty()
+    avatar16 = db.BlobProperty()
+    box = db.StringProperty()
+
     class Admin:
         pass
 
     def visible(self):
         return pickle.loads(self.public)
 
-    def avatar(self, size=96):
-        return "/profile/avatar/%s/" % self.user
+    def getavatar(self, size=96):
+        return "/profile/getavatar/%s/" % self.user
 
     def __unicode__(self):
         return _("%s's profile") % self.user
@@ -114,27 +123,3 @@ class Profile(db.Model):
 
     def yearsold(self):
         return (datetime.date.today().toordinal() - self.birthdate.toordinal()) / 365
-
-class Avatar(db.Model):
-    """
-    Avatar class. Every user can have one avatar associated.
-    """
-    photo = db.BlobProperty()
-    photo96 = db.BlobProperty()
-    photo64 = db.BlobProperty()
-    photo32 = db.BlobProperty()
-    photo16 = db.BlobProperty()
-    mimetype = db.StringProperty()
-    date = db.DateTimeProperty(auto_now_add=True)
-    box = db.StringProperty()
-    profile = db.ReferenceProperty(Profile)
-    valid = db.BooleanProperty(default=False)
-
-    def get_absolute_url(self):
-        return "/profile/avatarkey/%s/" % self.key().__str__()
-
-    def __unicode__(self):
-        return "%s-%s" % (self.user, self.photo)
-
-    class Admin:
-        pass
