@@ -1,5 +1,4 @@
 from django.shortcuts import render_to_response
-from userprofile import flickr
 from google.appengine.api import users
 from google.appengine.api import images, urlfetch
 from google.appengine.ext.db import get
@@ -17,8 +16,11 @@ import random
 import urllib
 from xml.dom import minidom
 import os
+import gdata.service
+import gdata.photos.service
+import gdata.urlfetch
 
-flickr.API_KEY=settings.FLICKR_APIKEY
+gdata.service.http_request_handler = gdata.urlfetch
 
 def login_required(func):
     def _wrapper(request, *args, **kw):
@@ -126,15 +128,15 @@ def delete(request, template):
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
 @login_required
-def searchflickr(request, template):
+def searchimages(request, template):
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method=="POST" and request.POST.get('search'):
         photos = list()
         urls = list()
-        for photo in flickr.photos_search(tags=request.POST.get('search'))[:10]:
-            photos.append(photo.getURL(size='Square', urlType='source'))
-            urls.append(photo.getURL(size='Medium', urlType='source'))
-            #photos.append("http://farm%s.static.flickr.com/%s/%s_%s_s.jpg" % ( photo.farm, photo.server, photo.id, photo.secret ))
-            #urls.append("http://farm%s.static.flickr.com/%s/%s_%s_b.jpg" % ( photo.farm, photo.server, photo.id, photo.secret ))
+        gd_client = gdata.photos.service.PhotosService()
+        feed = gd_client.SearchCommunityPhotos("%s&thumbsize=72c" % request.POST.get('search').split(" ")[0], limit='35')
+        for entry in feed.entry:
+            photos.append(entry.media.thumbnail[0].url)
+            urls.append(entry.content.src)
         return HttpResponse(simplejson.dumps({'success': True, 'photos': photos, 'urls': urls }))
     else:
         return render_to_response(template, locals(), context_instance=RequestContext(request))
