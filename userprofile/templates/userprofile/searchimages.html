@@ -8,7 +8,7 @@
   <script type="text/javascript">
     $(function() {
 			$("input[type='text']").focus();
-			$("form#flickr").submit(function() {
+			$("form#images").submit(function() {
 				$("img#loading").show();
 				$("div.photos").html('');
 				if ($("input[type='text']").val()) {
@@ -35,8 +35,8 @@
 	</script>
 </head>
 <body>
-	<form action="" id="flickr">
-		<p class="title" style="border-bottom: 2px solid;">{% trans "Search on flickr:" %} <input type="text" value="" /> <input type="submit" value="{% trans "Search" %}"/> <input type="button" name="cancel" value="{% trans "Cancel" %}" /> <img id="loading" style="display: none;" src="/static/images/loading.gif" /></p>
+	<form action="" id="images">
+		<p class="title" style="border-bottom: 2px solid;">{% trans "Search on Picasa Web:" %} <input type="text" value="" /> <input type="submit" value="{% trans "Search" %}"/> <input type="button" name="cancel" value="{% trans "Cancel" %}" /> <img id="loading" style="display: none;" src="/static/images/loading.gif" /></p>
 	</form>
 	<div class="photos">
 	</div>
