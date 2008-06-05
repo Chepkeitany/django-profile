@@ -156,10 +156,6 @@ def avatarChoose(request, template):
             url = form.cleaned_data.get('url')
             if url:
                 photo = urlfetch.fetch(url)
-                print
-                print photo.content
-                import sys
-                sys.exit()
 
             profile.avtemp = images.resize(photo.content, 500)
             profile.save()
