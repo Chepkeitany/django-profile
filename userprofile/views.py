@@ -157,7 +157,7 @@ def avatarChoose(request, template):
             if url:
                 photo = urlfetch.fetch(url)
 
-            profile.avtemp = images.resize(photo.content, 500)
+            profile.avatartemp = images.resize(photo.content, 500)
             profile.save()
 
 
@@ -184,7 +184,7 @@ def avatarCrop(request, template):
         if top < 0: top = 0
         if left < 0: left = 0
         profile.box = "%s-%s-%s-%s" % ( float(left), float(top), float(right), float(bottom))
-        profile.avatar = images.crop(profile.avtemp, float(left)/width, float(top)/height, float(right)/width, float(bottom)/height)
+        profile.avatar = images.crop(profile.avatartemp, float(left)/width, float(top)/height, float(right)/width, float(bottom)/height)
         profile.avatar96 = images.resize(profile.avatar, 96)
         profile.avatar64 = images.resize(profile.avatar, 64)
         profile.avatar32 = images.resize(profile.avatar, 32)
@@ -213,8 +213,8 @@ def getavatar(request, current_user=None, temp=None, size=96):
     elif temp:
         user = users.get_current_user()
         profile = Profile.all().filter("user = ", user).get()
-        if profile.avtemp:
-            return HttpResponse(profile.avtemp, mimetype="image/png")
+        if profile.avatartemp:
+            return HttpResponse(profile.avatartemp, mimetype="image/png")
         else:
             raise Http404
 
@@ -224,7 +224,7 @@ def avatarDelete(request, temp=None):
     profile = Profile.all().filter("user = ", user).get()
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         if temp:
-            profile.avtemp = None
+            profile.avatartemp = None
         else:
             for key in [ '', 'temp', '16', '32', '64', '96' ]:
                 setattr(profile, "avatar%s" % key, None)
