@@ -32,8 +32,8 @@ class AvatarForm(forms.Form):
         return url
 
     def clean(self):
-        if not (self.cleaned_data.get('photo') or self.cleaned_data.get('url') or self.cleaned_data.get('flickr')):
-            raise forms.ValidationError(_('You must enter one of the 3 possible options'))
+        if not (self.cleaned_data.get('photo') or self.cleaned_data.get('url')):
+            raise forms.ValidationError(_('You must enter one of the options'))
         else:
             return self.cleaned_data
 
