@@ -10,7 +10,6 @@ import pickle
 from django.utils import simplejson
 from userprofile.models import Profile, Continent, Country
 from django.template import RequestContext
-from google.appengine.api.urlfetch import fetch
 from django.conf import settings
 import random
 import urllib
@@ -42,7 +41,7 @@ def fetch_geodata(request, lat, lng):
     user = users.get_current_user()
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         url = "http://ws.geonames.org/countrySubdivision?lat=%s&lng=%s" % (lat, lng)
-        dom = minidom.parseString(fetch(url).content)
+        dom = minidom.parseString(urlfetch.fetch(url).content)
         country = dom.getElementsByTagName('countryCode')
         if len(country) >=1:
             country = country[0].childNodes[0].data
@@ -157,8 +156,12 @@ def avatarChoose(request, template):
             url = form.cleaned_data.get('url')
             if url:
                 photo = urlfetch.fetch(url)
+                print
+                print photo.content
+                import sys
+                sys.exit()
 
-            profile.avatartemp = photo.content
+            profile.avtemp = images.resize(photo.content, 500)
             profile.save()
 
 
@@ -185,7 +188,7 @@ def avatarCrop(request, template):
         if top < 0: top = 0
         if left < 0: left = 0
         profile.box = "%s-%s-%s-%s" % ( float(left), float(top), float(right), float(bottom))
-        profile.avatar = images.crop(profile.avatartemp, float(left)/width, float(top)/height, float(right)/width, float(bottom)/height)
+        profile.avatar = images.crop(profile.avtemp, float(left)/width, float(top)/height, float(right)/width, float(bottom)/height)
         profile.avatar96 = images.resize(profile.avatar, 96)
         profile.avatar64 = images.resize(profile.avatar, 64)
         profile.avatar32 = images.resize(profile.avatar, 32)
@@ -214,8 +217,8 @@ def getavatar(request, current_user=None, temp=None, size=96):
     elif temp:
         user = users.get_current_user()
         profile = Profile.all().filter("user = ", user).get()
-        if profile.avatartemp:
-            return HttpResponse(profile.avatartemp, mimetype="image/png")
+        if profile.avtemp:
+            return HttpResponse(profile.avtemp, mimetype="image/png")
         else:
             raise Http404
 
@@ -225,7 +228,7 @@ def avatarDelete(request, temp=None):
     profile = Profile.all().filter("user = ", user).get()
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         if temp:
-            profile.avatartemp = None
+            profile.avtemp = None
         else:
             for key in [ '', 'temp', '16', '32', '64', '96' ]:
                 setattr(profile, "avatar%s" % key, None)

@@ -92,10 +92,9 @@ class Profile(db.Model):
     public = db.BlobProperty()
     country = db.ReferenceProperty(Country)
     location = db.StringProperty()
-    visibility = db.BlobProperty()
 
     # Avatar zone
-    avatartemp = db.BlobProperty()
+    avtemp = db.BlobProperty()
     avatar = db.BlobProperty()
     avatar96 = db.BlobProperty()
     avatar64 = db.BlobProperty()
