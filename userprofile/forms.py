@@ -11,7 +11,7 @@ class ProfileForm(djangoforms.ModelForm):
 
     class Meta:
         model = Profile
-        exclude = ('user', 'slug', 'date')
+        exclude = ('user', 'slug', 'date', 'avtemp', 'avatar', 'avatar16', 'avatar32', 'avatar64', 'avatar96')
 
 class AvatarForm(forms.Form):
     """
