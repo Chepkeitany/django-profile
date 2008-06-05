@@ -94,7 +94,7 @@ class Profile(db.Model):
     location = db.StringProperty()
 
     # Avatar zone
-    avtemp = db.BlobProperty()
+    avatartemp = db.BlobProperty()
     avatar = db.BlobProperty()
     avatar96 = db.BlobProperty()
     avatar64 = db.BlobProperty()
