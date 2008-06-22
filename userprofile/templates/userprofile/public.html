@@ -27,7 +27,7 @@
 <div class="vcard">
 	<ul>
 		{% if profile.avatar %}
-		<li><img class="photo" src="{{ profile.get_avatar96_url }}" /></li>
+		<li><img class="photo" src="/accounts/getavatar/{{ profile.user }}/" /></li>
 		{% else %}
 		<li><img class="photo" src="{{ MEDIA_URL }}images/default.96.png" /></li>
 		{% endif %}
