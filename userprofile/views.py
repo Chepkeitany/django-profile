@@ -3,7 +3,7 @@ from google.appengine.api import users
 from google.appengine.api import images, urlfetch
 from google.appengine.ext.db import get
 from django.http import HttpResponseRedirect, HttpResponse
-from userprofile.forms import ProfileForm, AvatarForm, AvatarCropForm
+from userprofile.forms import ProfileForm, AvatarForm, AvatarCropForm, LocationForm
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 import pickle
@@ -76,6 +76,7 @@ def public(request, current_user, template, APIKEY=None):
 def overview(request, template, section, APIKEY=None):
     user = users.get_current_user()
     profile = Profile.all().filter("user = ", user).get()
+    if not profile: profile = Profile(user=user)
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
 @login_required
@@ -93,6 +94,7 @@ def makepublic(request, template, section, APIKEY=None):
 
 @login_required
 def searchimages(request, template, section):
+    user = users.get_current_user()
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method=="POST" and request.POST.get('search'):
         photos = list()
         urls = list()
@@ -101,7 +103,6 @@ def searchimages(request, template, section):
         for entry in feed.entry:
             photos.append(entry.media.thumbnail[0].url)
             urls.append(entry.content.src)
-
         return HttpResponse(simplejson.dumps({'success': True, 'photos': photos, 'urls': urls }))
     else:
         return render_to_response(template, locals(), context_instance=RequestContext(request))
@@ -112,7 +113,8 @@ def profile(request, template, section, APIKEY=None):
     Private part of the user profile
     """
     forms = { 'location': LocationForm, 'personal': ProfileForm }
-    profile, created = Profile.objects.get_or_create(user=request.user)
+    user = users.get_current_user()
+    profile = Profile.all().filter("user = ", user).get()
 
     if request.method == "POST":
         form = forms[section](request.POST, instance=profile)
@@ -122,19 +124,16 @@ def profile(request, template, section, APIKEY=None):
     else:
         form = forms[section](instance=profile)
 
-    lat = profile.latitude
-    lng = profile.longitude
-
-    continents = Continent.objects.all()
+    continents = Continent.all()
     country_data = dict()
     for continent in continents:
-        country_data[continent] = Country.objects.filter(continent=continent)
+        country_data[continent] = Country.all().filter("continent = ", continent)
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
 
 @login_required
-def delete(request, template):
+def delete(request, section, template):
     user = users.get_current_user()
     if request.method == "POST":
         # Remove the profile
@@ -142,43 +141,6 @@ def delete(request, template):
             profile.delete()
 
         return HttpResponseRedirect('%sdone/' % request.path)
-
-    return render_to_response(template, locals(), context_instance=RequestContext(request))
-
-@login_required
-def searchimages(request, template):
-    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method=="POST" and request.POST.get('search'):
-        photos = list()
-        urls = list()
-        gd_client = gdata.photos.service.PhotosService()
-        feed = gd_client.SearchCommunityPhotos("%s&thumbsize=72c" % request.POST.get('search').split(" ")[0], limit='35')
-        for entry in feed.entry:
-            photos.append(entry.media.thumbnail[0].url)
-            urls.append(entry.content.src)
-        return HttpResponse(simplejson.dumps({'success': True, 'photos': photos, 'urls': urls }))
-    else:
-        return render_to_response(template, locals(), context_instance=RequestContext(request))
-
-@login_required
-def avatarChoose(request, template):
-    """
-    Avatar choose
-    """
-    user = users.get_current_user()
-    if not request.method == "POST":
-        form = AvatarForm()
-    else:
-        profile = Profile.all().filter("user = ", user).get()
-        form = AvatarForm(request.POST, request.FILES)
-        if form.is_valid():
-            photo = form.cleaned_data.get('photo')
-            url = form.cleaned_data.get('url')
-            if url:
-                photo = urlfetch.fetch(url)
-
-            profile.avatartemp = images.resize(photo.content, 500)
-            profile.save()
-
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
@@ -238,41 +200,23 @@ def getavatar(request, current_user=None, temp=None, size=96):
             raise Http404
 
 @login_required
-def avatarDelete(request, temp=None):
-    user = users.get_current_user()
-    profile = Profile.all().filter("user = ", user).get()
-    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-        if temp:
-            profile.avatartemp = None
-        else:
-            for key in [ '', 'temp', '16', '32', '64', '96' ]:
-                setattr(profile, "avatar%s" % key, None)
-        profile.save()
-        return HttpResponse(simplejson.dumps({'success': True}))
-    else:
-        raise Http404()
-
-@login_required
 def avatarchoose(request, template, section, websearch=False):
     """
     Avatar choose
     """
-    profile, created = Profile.objects.get_or_create(user = request.user)
+    user = users.get_current_user()
     if not request.method == "POST":
         form = AvatarForm()
     else:
+        profile = Profile.all().filter("user = ", user).get()
         form = AvatarForm(request.POST, request.FILES)
         if form.is_valid():
             photo = form.cleaned_data.get('photo')
             url = form.cleaned_data.get('url')
             if url:
-                photo = urllib2.urlopen(url).read()
-            else:
-                photo = photo.content
-            profile.save_avatartemp_file("%s_temp.jpg" % request.user.username, photo)
-            image = Image.open(profile.get_avatartemp_filename())
-            image.thumbnail((800, 800), Image.ANTIALIAS)
-            image.save(profile.get_avatartemp_filename(), "JPEG")
+                photo = urlfetch.fetch(url)
+
+            profile.avatartemp = images.resize(photo.content, 500)
             profile.save()
             return HttpResponseRedirect('%scrop/' % request.path)
 
@@ -280,14 +224,11 @@ def avatarchoose(request, template, section, websearch=False):
 
 @login_required
 def avatardelete(request, avatar_id=False):
+    user = users.get_current_user()
+    profile = Profile.all().filter("user = ", user).get()
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-        profile = Profile.objects.get(user = request.user)
         for key in [ '', 'temp', '16', '32', '64', '96' ]:
-            try:
-                os.remove("%s" % getattr(profile, "get_avatar%s_filename" % key)())
-            except:
-                pass
-            setattr(profile, "avatar%s" % key, '')
+            setattr(profile, "avatar%s" % key, None)
         profile.save()
         return HttpResponse(simplejson.dumps({'success': True}))
     else:

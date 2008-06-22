@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% blocktrans %}{{ user }}'s Dashboard{% endblocktrans %}{% endblock %}
+{% block content %}
+{% include "userprofile/menu.html" %}
+<form class="commonform profile" action="" method="post">
+	<h1>{% trans "Overview of your profile" %}</h1>
+	{% if profile.avatar %}
+	<div class="avatar">
+		<img src="{{ profile.get_avatar96_url }}" />
+	</div>
+	{% endif %}
+  <fieldset>
+		<div>
+    	<label for="id_user">{% trans "Username:" %}</label>
+    	<strong id="id_user">{{ user.nickname }}</strong> 
+		</div>
+		<div>
+    	<label for="id_email">{% trans "E-mail:" %}</label> <strong id="id_email">{{ user.email }}</strong>
+		</div>
+  </fieldset>
+</form>
+{% endblock %}

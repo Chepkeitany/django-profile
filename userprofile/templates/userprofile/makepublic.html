@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% blocktrans %}{{ user }}'s Dashboard{% endblocktrans %}{% endblock %}
+{% block customjs %}
+{% if profile.latitude %}
+<script src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key={{ APIKEY }}" type="text/javascript"></script>
+<script type="text/javascript">
+	$(function() {
+  	if (GBrowserIsCompatible()) {
+    	this.map = new GMap2(document.getElementById("map"));
+    	this.map.addControl(new GLargeMapControl());
+    	this.map.addControl(new GOverviewMapControl())
+    	this.map.addControl(new GMapTypeControl())
+    	this.map.enableContinuousZoom();
+    	this.map.setCenter(new GLatLng({{ profile.latitude }}, {{ profile.longitude }}), 4);
+    	this.marker = new GMarker(new GLatLng({{ profile.latitude }}, {{ profile.longitude }}), {clickable: false, bouncy: true, draggable: false});
+    	this.map.addOverlay(this.marker);
+		}
+  });
+</script>
+{% endif %}
+{% endblock %}
+{% block content %}
+{% include "userprofile/menu.html" %}
+<form class="commonform profile" action="" method="post">
+	<h1>{% trans "Click on the information you want to make public" %}</h1>
+  <fieldset>
+		<div>
+    	<label for="id_firstname">{% trans "First Name:" %}</label>
+			{% if profile.firstname %}
+			<input style="float: left;" type="checkbox" name="firstname_public" {% if profile.visible.firstname %}checked="on"{% endif %}/>
+    	<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{{ profile.firstname }}</strong>
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
+			{% endif %}
+		</div>
+		<div>
+    	<label for="id_surname">{% trans "Surname:" %}</label>
+			{% if profile.surname %}
+			<input style="float: left;" type="checkbox" name="surname_public" {% if profile.visible.surname %}checked="on"{% endif %}/>
+    	<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{{ profile.surname }}</strong>
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
+			{% endif %}
+		</div>
+		<div>
+    	<label for="id_gender">{% trans "Gender:" %}</label>
+			{% if profile.gender %}
+			<input style="float: left;" type="checkbox" name="gender_public" {% if profile.visible.gender %}checked="on"{% endif %} />
+			{% ifequal profile.gender "M" %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;"><img src="{{ MEDIA_URL }}images/male.png" /> {% trans "Male" %}</strong>
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;"><img src="{{ MEDIA_URL }}images/female.png" /> {% trans "Female" %}</strong>
+			{% endifequal %}
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
+			{% endif %}
+		</div>
+		<div>
+   		<label for="id_birthdate">{% trans "Birth date:" %}</label>
+			{% if profile.yearsold %}
+			<input style="float: left;" type="checkbox" name="birthdate_public" {% if profile.visible.birthdate %}checked="on"{% endif %}/>
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{{ profile.yearsold }} {% trans "years old." %}</strong>
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
+			{% endif %}
+		</div>
+		<div>
+    	<label for="id_url">{% trans "Url:" %}</label>
+			{% if profile.url %}
+			<input style="float: left;" type="checkbox" name="url_public" {% if profile.visible.url %}checked="on"{% endif %} />
+    	<a style="font-size:.8em;" href="{{ profile.url }}"><strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{{ profile.url }}</strong></a>
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
+			{% endif %}
+		</div>
+		<div>
+    	<label for="id_about">{% trans "About:" %}</label>
+			{% if profile.about %}
+			<input style="float: left;" type="checkbox" name="about_public" {% if profile.visible.about %}checked="on"{% endif %}/>
+    	<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{{ profile.about }}</strong>
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
+			{% endif %}
+		</div>
+		<div>
+    	<label for="id_country">{% trans "Country:" %}</label>
+			{% if profile.country %}
+			<input style="float: left;" type="checkbox" name="country_id_public" {% if profile.visible.country_id %}checked="on"{% endif %}/>
+    	<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{{ profile.country }}</strong>
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
+			{% endif %}
+		</div>
+		{% if APIKEY %}
+		<div>
+    	<label for="id_location">{% trans "Location:" %}</label>
+			{% if profile.location %}
+			<input style="float: left;" type="checkbox" name="location_public" {% if profile.visible.location %}checked="on"{% endif %}/>
+    	<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{{ profile.location }}</strong>
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
+			{% endif %}
+		</div>
+    <div>
+      <label for="map">{% trans "Position:" %}</label>
+			{% if profile.latitude %}
+			<input style="float: left;" type="checkbox" name="latitude_public" {% if profile.visible.latitude %}checked="on"{% endif %}/>
+      <div id="map"></div>
+			{% else %}
+			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
+			{% endif %}
+    </div>
+		{% endif %}
+		<div class="save">
+  		<input type="submit" style="float: right;" class="save" value="{% trans 'Save' %}" />
+		</div>
+  </fieldset>
+</form>
+{% endblock %}

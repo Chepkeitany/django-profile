@@ -13,6 +13,15 @@ class ProfileForm(djangoforms.ModelForm):
         model = Profile
         exclude = ('user', 'slug', 'date', 'avatartemp', 'avatar', 'avatar16', 'avatar32', 'avatar64', 'avatar96')
 
+class LocationForm(djangoforms.ModelForm):
+    """
+    Profile Form. Composed by all the Profile model fields.
+    """
+
+    class Meta:
+        model = Profile
+        fields = ('location', 'geopoint', 'country')
+
 class AvatarForm(forms.Form):
     """
     The avatar form requires only one image field.
