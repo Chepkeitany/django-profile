@@ -32,7 +32,7 @@ APIKEY="ABQIAAAA06IJoYHDPFMx4u3hTtaghxS1mGAeXhF8eEwoOC3WUqD9xSVHbhT_wvgbriWemZzo
 # django-profile.appspot.com
 APIKEY="ABQIAAAA06IJoYHDPFMx4u3hTtaghxTgGHawVmFK-PeSfwKit_FZRDle2xRzLAGoZFdyMnOf82PdGvr_wAGehg"
 
-FLICKR_APIKEY="4a2403a843e91a18eb6f3264d2c6489d"
+WEBSEARCH = True
 
 MIMETYPES = { 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'gif': 'image/gif', 'png': 'image/png', }
 
@@ -107,6 +107,8 @@ ROOT_PATH = os.path.dirname(__file__)
 TEMPLATE_DIRS = (
     os.path.join(ROOT_PATH, 'templates')
 )
+
+AUTH_PROFILE_MODULE = 'userprofile.Profile'
 
 INSTALLED_APPS = (
      'appengine_django',

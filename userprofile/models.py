@@ -80,6 +80,11 @@ class Profile(db.Model):
     User profile model
     """
 
+class Profile(models.Model):
+    """
+    User profile model
+    """
+
     firstname = db.StringProperty()
     surname = db.StringProperty()
     user = db.UserProperty()
@@ -100,7 +105,6 @@ class Profile(db.Model):
     avatar64 = db.BlobProperty()
     avatar32 = db.BlobProperty()
     avatar16 = db.BlobProperty()
-    box = db.StringProperty()
 
     class Admin:
         pass
@@ -122,3 +126,13 @@ class Profile(db.Model):
 
     def yearsold(self):
         return (datetime.date.today().toordinal() - self.birthdate.toordinal()) / 365
+
+    def save(self):
+        if not self.public:
+            public = dict()
+            for item in self.__dict__.keys() + [ 'avatar', 'nickname', 'email' ]:
+                public[item] = False
+            public["nickname"] = True
+            public["avatar"] = True
+            self.public = pickle.dumps(public)
+        super(Profile, self).save()

@@ -21,6 +21,12 @@ import gdata.urlfetch
 
 gdata.service.http_request_handler = gdata.urlfetch
 
+def get_profiles():
+    return Profile.all().order("-date")
+
+def get_current_user():
+    return users.get_current_user()
+
 def login_required(func):
     def _wrapper(request, *args, **kw):
         user = users.get_current_user()
@@ -54,8 +60,7 @@ def fetch_geodata(request, lat, lng):
     else:
         raise Http404()
 
-def public(request, APIKEY, current_user, template):
-    profile = None
+def public(request, current_user, template, APIKEY=None):
     user = users.get_current_user()
     for p in Profile.all():
         if p.user.nickname() == current_user:
@@ -68,51 +73,65 @@ def public(request, APIKEY, current_user, template):
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
 @login_required
-def private(request, APIKEY, template):
-    """
-    Private part of the user profile
-    """
+def overview(request, template, section, APIKEY=None):
     user = users.get_current_user()
     profile = Profile.all().filter("user = ", user).get()
-    if not profile:
-        profile = Profile(user=user)
-        profile.save()
+    return render_to_response(template, locals(), context_instance=RequestContext(request))
 
-    form = ProfileForm(instance=profile)
-    continents = Continent.all()
-    country_data = dict()
-    spain = Country.all().filter("name = ", "Spain").get()
-    for continent in continents:
-        country_data[continent] = Country.all().filter("continent = ", continent)
+@login_required
+def makepublic(request, template, section, APIKEY=None):
+    profile, created = Profile.objects.get_or_create(user = request.user)
+    if request.method == "POST":
+        public = dict()
+        for item in profile.__dict__.keys():
+            if request.POST.has_key("%s_public" % item):
+                public[item] = request.POST.get("%s_public" % item)
+        profile.save_public_file("%s.public" % profile.user, pickle.dumps(public))
+        return HttpResponseRedirect("%sdone/" % request.path)
 
     return render_to_response(template, locals(), context_instance=RequestContext(request))
 
 @login_required
-def save(request):
-    user = users.get_current_user()
-    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method=="POST":
-        profile = Profile.all().filter("user = ", user).get()
-        form = ProfileForm(data=request.POST, instance=profile)
-        if form.is_valid():
-            profile = form.save(commit=False)
-            if not form.cleaned_data.get("country"):
-                profile.country = None
-                profile.location = None
-                profile.geopoint = None
+def searchimages(request, template, section):
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method=="POST" and request.POST.get('search'):
+        photos = list()
+        urls = list()
+        gd_client = gdata.photos.service.PhotosService()
+        feed = gd_client.SearchCommunityPhotos("%s&thumbsize=72c" % request.POST.get('search').split(" ")[0], limit='35')
+        for entry in feed.entry:
+            photos.append(entry.media.thumbnail[0].url)
+            urls.append(entry.content.src)
 
-            public = dict()
-            for item in profile.__dict__.get("_entity").keys() + [ 'avatar', 'nickname', 'email' ]:
-                if request.POST.has_key("%s_public" % item):
-                    public[item] = request.POST.get("%s_public" % item)
-
-            profile.public = pickle.dumps(public)
-            profile.save()
-
-            return HttpResponse(simplejson.dumps({ 'success': True }))
-        else:
-            return HttpResponse(simplejson.dumps({ 'success': False }))
+        return HttpResponse(simplejson.dumps({'success': True, 'photos': photos, 'urls': urls }))
     else:
-        raise Http404()
+        return render_to_response(template, locals(), context_instance=RequestContext(request))
+
+@login_required
+def profile(request, template, section, APIKEY=None):
+    """
+    Private part of the user profile
+    """
+    forms = { 'location': LocationForm, 'personal': ProfileForm }
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = forms[section](request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect("%sdone/" % request.path)
+    else:
+        form = forms[section](instance=profile)
+
+    lat = profile.latitude
+    lng = profile.longitude
+
+    continents = Continent.objects.all()
+    country_data = dict()
+    for continent in continents:
+        country_data[continent] = Country.objects.filter(continent=continent)
+
+    return render_to_response(template, locals(), context_instance=RequestContext(request))
+
 
 @login_required
 def delete(request, template):
@@ -232,6 +251,81 @@ def avatarDelete(request, temp=None):
         return HttpResponse(simplejson.dumps({'success': True}))
     else:
         raise Http404()
+
+@login_required
+def avatarchoose(request, template, section, websearch=False):
+    """
+    Avatar choose
+    """
+    profile, created = Profile.objects.get_or_create(user = request.user)
+    if not request.method == "POST":
+        form = AvatarForm()
+    else:
+        form = AvatarForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = form.cleaned_data.get('photo')
+            url = form.cleaned_data.get('url')
+            if url:
+                photo = urllib2.urlopen(url).read()
+            else:
+                photo = photo.content
+            profile.save_avatartemp_file("%s_temp.jpg" % request.user.username, photo)
+            image = Image.open(profile.get_avatartemp_filename())
+            image.thumbnail((800, 800), Image.ANTIALIAS)
+            image.save(profile.get_avatartemp_filename(), "JPEG")
+            profile.save()
+            return HttpResponseRedirect('%scrop/' % request.path)
+
+    return render_to_response(template, locals(), context_instance=RequestContext(request))
+
+@login_required
+def avatardelete(request, avatar_id=False):
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        profile = Profile.objects.get(user = request.user)
+        for key in [ '', 'temp', '16', '32', '64', '96' ]:
+            try:
+                os.remove("%s" % getattr(profile, "get_avatar%s_filename" % key)())
+            except:
+                pass
+            setattr(profile, "avatar%s" % key, '')
+        profile.save()
+        return HttpResponse(simplejson.dumps({'success': True}))
+    else:
+        raise Http404()
+
+@login_required
+def avatarcrop(request, template, section):
+    """
+    Avatar management
+    """
+    profile = Profile.objects.get(user = request.user)
+    if not request.method == "POST":
+        form = AvatarCropForm()
+    else:
+        form = AvatarCropForm(request.POST)
+        if form.is_valid():
+            top = int(request.POST.get('top'))
+            left = int(request.POST.get('left'))
+            right = int(request.POST.get('right'))
+            bottom = int(request.POST.get('bottom'))
+
+            image = Image.open(profile.get_avatartemp_filename())
+            box = [ left, top, right, bottom ]
+            image = image.crop(box)
+            if image.mode not in ('L', 'RGB'):
+                image = image.convert('RGB')
+
+            base, temp = os.path.split(profile.get_avatartemp_filename())
+            image.save(os.path.join(base, "%s.jpg" % profile.user.username))
+            profile.avatar = os.path.join(os.path.split(profile.avatartemp)[0], "%s.jpg" % profile.user.username)
+            for size in [ 96, 64, 32, 16 ]:
+                image.thumbnail((size, size), Image.ANTIALIAS)
+                image.save(os.path.join(base, "%s.%s.jpg" % (profile.user.username, size)))
+                setattr(profile, "avatar%s" % size, os.path.join(os.path.split(profile.avatartemp)[0], "%s.%s.jpg" % (profile.user.username, size)))
+            profile.save()
+            return HttpResponseRedirect("%sdone/" % request.path)
+
+    return render_to_response(template, locals(), context_instance=RequestContext(request))
 
 @login_required
 def fill(request, model):
