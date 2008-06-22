@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{{ profile.user }}'s public profile{% endblock %}
 {% block customjs %}
-{% if profile.geopoint and profile.visible.geopoint %}
+{% if profile.latitude and profile.visible.latitude %}
 <script type="text/javascript" src="http://www.google.com/jsapi?key={{ APIKEY }}"></script>
 <script type="text/javascript">google.load("maps", "2");</script>
 <script type="text/javascript">
@@ -13,8 +13,8 @@
     	map.addControl(new google.maps.OverviewMapControl())
     	map.addControl(new google.maps.MapTypeControl())
     	map.enableContinuousZoom();
-    	map.setCenter(new google.maps.LatLng({{ profile.geopoint.lat }}, {{ profile.geopoint.lon }}), 4);
-    	var marker = new google.maps.Marker(new google.maps.LatLng({{ profile.geopoint.lat }}, {{ profile.geopoint.lon }}), {clickable: false });
+    	map.setCenter(new google.maps.LatLng({{ profile.latitude }}, {{ profile.longitude }}), 4);
+    	var marker = new google.maps.Marker(new google.maps.LatLng({{ profile.latitude }}, {{ profile.longitude }}), {clickable: false });
     	map.addOverlay(marker);
     }
 	});
@@ -26,10 +26,10 @@
 <h1>Public profile of {{ profile.user }}</h1>
 <div class="vcard">
 	<ul>
-		{% if profile.visible.avatar %}
-		<li><img class="photo" src="{{ profile.getavatar }}" /></li>
+		{% if profile.avatar %}
+		<li><img class="photo" src="{{ profile.get_avatar96_url }}" /></li>
 		{% else %}
-		<li><img class="photo" src="/static/images/default.96.png" /></li>
+		<li><img class="photo" src="{{ MEDIA_URL }}images/default.96.png" /></li>
 		{% endif %}
   	<li>{% trans "Username" %}: {{ profile.user }}</li>
   	{% if profile.user.email and profile.visible.email %}<li>{% trans "E-mail" %}: {{ profile.user.email }}</li>{% endif %}
@@ -37,11 +37,11 @@
   	{% if profile.url and profile.visible.url %}<li>{% trans "Url" %}: <a href="{{ profile.url }}">{{ profile.url }}</a></li>{% endif %}
   	{% if profile.about and profile.visible.about %}<li>{% trans "About" %}: {{ profile.about }}</li>{% endif %}
 		{% if profile.gender and profile.visible.gender %}<li>{% trans "Gender" %}: <img src="{{ profile.get_genderimage_url }}" /></li>{% endif %}
-		{% if profile.country and profile.visible.country %}<li>{% trans "Country" %}: {{ profile.country }}</li>{% endif %}
+		{% if profile.country and profile.visible.country_id %}<li>{% trans "Country" %}: {{ profile.country }}</li>{% endif %}
 		{% if profile.location and profile.visible.location %}<li>{% trans "Location" %}: {{ profile.location }}</li>{% endif %}
 	</ul>
 </div>
-{% if profile.geopoint and profile.visible.geopoint %}
+{% if profile.latitude and profile.visible.latitude %}
 <div id="map"></div>
 {% endif %}
 {% endblock %}

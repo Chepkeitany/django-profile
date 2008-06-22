@@ -10,18 +10,6 @@ GENDER_CHOICES = ( ('F', _('Female')), ('M', _('Male')),)
 GENDER_IMAGES = { "M": "%simages/male.png" % settings.MEDIA_URL, "F": "%simages/female.png" % settings.MEDIA_URL }
 
 class Continent(db.Model):
-    """
-    Continent class. Simple class with the information about continents.
-    It can be filled up with this data:
-
-Continent(name="Asia", code="AS").save()
-Continent(name="Africa", code="AF").save()
-Continent(name="Europe", code="EU").save()
-Continent(name="North America", code="NA").save()
-Continent(name="South America", code="SA").save()
-Continent(name="Oceania", code="OC").save()
-Continent(name="Antarctica", code="AN").save()
-    """
     code = db.StringProperty(required=True)
     name = db.StringProperty(required=True)
 
@@ -39,22 +27,6 @@ Continent(name="Antarctica", code="AN").save()
         verbose_name_plural = _('Continents')
 
 class Country(db.Model):
-    """
-    Country class with the countries data needed in the Profile class. Dependent
-    of the Continent class.
-
-    Fill the database with this code:
-
-f = open("db/countries.txt")
-for line in f.xreadlines():
-    line = line.strip()
-    d, name = line.split('"')[:-1]
-    continent, code = d.split(",")[:-1]
-    c = Continent.all().filter("code = ", continent).get()
-    p = Country(name=name, code=code, continent=c)
-    p.save()
-
-    """
     name = db.StringProperty(required=True)
     code = db.StringProperty(required=True)
     continent = db.ReferenceProperty(Continent)
@@ -76,11 +48,6 @@ for line in f.xreadlines():
 
 
 class Profile(db.Model):
-    """
-    User profile model
-    """
-
-class Profile(models.Model):
     """
     User profile model
     """
