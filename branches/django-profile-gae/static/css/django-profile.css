@@ -15,28 +15,28 @@ div.usercard {
 	width: 250px;
 }
 
-div.vcard ul {
+div.vcard > ul {
 	list-style: none;
 	margin: 0px;
 	padding: 0px;
 }
 
-div.vcard img.gender {
+div.vcard > img.gender {
 	float: right;
 }
 
 div.content {
-	padding: 15px;
+	padding: 0px;
 }
 
 div.header {
 	background: #EFEFEF;
-	border: 4px solid #CCC;
 	padding: 10px;
+	border-bottom: 4px solid #CCC;
 }
 
-div.header a:hover {
-	color: #444;
+div.header a {
+	color: blue;
 }
 
 ul.menu {
@@ -55,6 +55,10 @@ p.register a {
 	font-size: 1.3em;
 }
 
+form.commonform {
+	overflow: hidden;
+}
+
 form.commonform > fieldset > div > strong {
 	font-weight: bold;
 	font-size: 1.4em;
@@ -62,6 +66,12 @@ form.commonform > fieldset > div > strong {
 
 form.commonform > fieldset {
 	border: 0px solid;
+	margin: 0px;
+	padding: 0px;
+}
+
+form.commonform h1 {
+	border-bottom: 2px solid black;
 }
 
 form.commonform > fieldset > div {
@@ -127,12 +137,12 @@ form.profile > fieldset > div > select {
 
 p.error {
 	clear: both;
-	background: #f06f5c;
-	width: 100%;
+	border: 2px solid #f06f5c;
+	width: 60%;
 	font-size: 1.1em;
-	color: white;
 	text-align: center;
 	margin: 0px;
+	margin-top: 20px;
 	padding: 3px;
 }
 
@@ -154,11 +164,11 @@ a.male, a.female {
 }
 
 a.male {
-  background: url(/static/images/male.png) no-repeat #E6E6E6;
+  background: url(/site_media/images/male.png) no-repeat #E6E6E6;
 }
 
 a.female {
-  background: url(/static/images/female.png) no-repeat #E6E6E6;
+  background: url(/site_media/images/female.png) no-repeat #E6E6E6;
 }
 
 div#map {
@@ -180,9 +190,9 @@ div.avatar {
 	float: left;
 }
 
-div.avatar > a > img {
-	border: 1px solid #CCC;
-	padding: 1px;
+div.avatar img {
+	border: 3px solid #CCC;
+	padding: 2px;
 	text-align: center;
 }
 
@@ -209,11 +219,64 @@ select#id_country > option[disabled=disabled] {
 }
 
 div.save {
+	overflow: hidden;
 	background: #EFEFEF;
 	border: 1px solid #CCC;
+	margin-top: 15px;
 	padding: 5px;
 }
 
-div.save input[type=button] {
+div.save input[type=submit] {
 	font-size: 1.4em;
+}
+
+ul.profilemenu {
+	background: #EFEFEF; 
+	margin: 0px; 
+	padding: 0px; 
+	list-style: none;
+	font-size: 0.9em;
+	border: 1px solid #777;
+}
+
+ul.profilemenu li.active {
+	border: 4px solid #777;
+	background: #CCC;
+}
+
+ul.profilemenu li {
+	line-height: 34px;
+	display: inline;
+	margin: 0px;
+	padding: 5px 18px;
+}
+
+div.loading {
+  margin: auto;
+  width: 180px;
+  font-weight: bold;
+  overflow: hidden;
+  display: none;
+}
+
+div.loading > p > img {
+  vertical-align: middle;
+}
+
+div.loading > p {
+  margin-left: 10px;
+  padding: 0px;
+  margin: 0px;
+}
+
+div.photos img {
+  border: 5px solid white;
+}
+
+div.photos img:hover {
+  border: 5px solid #CCC;
+}
+
+p.intro {
+	margin: 10px 0px;
 }

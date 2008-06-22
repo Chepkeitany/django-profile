@@ -4,32 +4,31 @@
 <head>
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ MEDIA_URL }}css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/django-profile.css" type="text/css" />
     {% block customcss %}{% endblock %}
     <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
     {% block customjs %}{% endblock %}
 </head>
 {% load i18n %}
 <body>
-	<div style="background: #EFEFEF; padding: 12px; border-bottom: 4px solid #808080;">
-  	{% trans "This is a very simple demo of the Google AppEngine branch of the open-source project" %} <a style="color: blue;" href="http://code.google.com/p/django-profile">django-profile</a>. {% trans "It's designed to provide an easy-to-install user profile panel which can be integrated on your django-gae application" %}.
-	</div>
-	<div class="content">
-		<div class="header">
-			<ul class="menu">
-				<li><a href="/">{% trans "Frontpage" %}</a></li>
-  			{% if user %}
-				<li><a href="/profile/">{% trans "Edit profile" %}</a></li>
-   			<li><a href="/profile/logout/">{% trans "Logout" %}</a></li>
-				{% else %} 
-				<li><a href="/profile/">{% trans "Login" %}</a></li>
-  			{% endif %}
-  		</ul>
-			{% if not user %}
-			<p class="register">{% trans "If you don't have an account, you can" %} <a href="/profile/">{% trans "login" %}</a> {% trans "and get one; it's free, and you could try this demo and publish your usercard." %}</p>
-			{% endif %}
-		</div>
-		{% block content %}{% endblock %}
-	</div>
+  <div class="content">
+    <div class="header">
+      <ul class="menu">
+        <li><a href="/">{% trans "Frontpage" %}</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="/accounts/profile/">{% trans "Profile" %}</a></li>
+        <li><a href="/accounts/logout/">{% trans "Logout" %}</a></li>
+        {% else %}
+        <li><a href="/accounts/profile/">{% trans "Login" %}</a></li>
+        {% endif %}
+      </ul>
+      {% if not user.is_authenticated %}
+      <p class="register">{% trans "If you don't have an account, you can" %} <a href="/accounts/profile:/">{% trans "sign up" %}</a> {% trans "for one; it's free, and you could try this demo and publish your usercard." %}</p>
+      {% endif %}
+    </div>
+    <div style="padding: 15px;">
+    {% block content %}{% endblock %}
+    </div>
+  </div>
 </body>
 </html>
