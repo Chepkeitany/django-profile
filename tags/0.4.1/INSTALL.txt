@@ -1,0 +1,116 @@
+------------------
+-- Requeriments --
+------------------
+
+First of all, the requerimient to run this software is:
+
+	* Django version 0.96 or greater.
+
+	* The Python Imaging Library:
+		* python-imaging package (on Debian or Ubuntu).
+		* Source: http://www.pythonware.com/products/pil/
+
+	* Optional: the Google Data API
+		* Download from: http://code.google.com/p/gdata-python-client/
+
+You can see a demo of which can be accomplished here:
+
+	http://profile.coredump.es
+
+or here (Google AppEngine branch of this application):
+
+	http://django-profile.appspot.com
+
+
+-----------------
+-- Quick guide --
+-----------------
+
+You can run the demo supplied with this software package following these steps:
+
+* Make django visible in your python path. You could import the last version
+from the repository executing this command on this directory:
+
+	$ svn co http://code.djangoproject.com/svn/django/trunk/django
+
+* Make the "userprofile" module visible to your PYTHONPATH.
+
+* Download and put on the PYTHONPATH the Google Data APIs. This allow to select avatars directly from Picasaweb:
+	$ wget http://gdata-python-client.googlecode.com/files/gdata.py-1.1.0.tar.gz
+	$ tar zxvf gdata.py-1.1.0.tar.gz
+	Now move the gdata.py-1.1.0/src/gdata and gdata.py-1.1.0/src/atom directories to your PYTHONPATH.
+
+* Fill the Continents and Countries information with the database supplied. Follow this steps:
+	$ cd demo
+	$ python manage.py loaddata userprofile-continent
+	$ python manage.py loaddata userprofile-country
+
+* Go to the "demo" directory located in this directory and run:
+
+	$ python manage.py syncdb
+and
+	$ python manage.py runserver
+
+
+You can now connect to the django web server and try the demo. 
+
+	http://127.0.0.1:8000
+
+
+* You will need a valid e-mail server to try the e-mail validation process. 
+  Fill this information in settings.py:
+
+# e-mail settings
+DEFAULT_FROM_EMAIL = ''
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+
+* You also will need a valid Google Maps API Key. Obtain one for your site name here:
+
+	http://www.google.com/apis/maps/signup.html
+
+  Put the obtained key in the constant APIKEY located in the file 'settings.py'.
+
+--------------------------
+-- Custom install guide --
+--------------------------
+Once you've seen what can be done, you could integrate django-profile with your custom
+software. Basically, you need these things:
+
+* Add django and the required module accesible from your PYTHONPATH (Look at the demo
+  section).
+
+* Add this directive to the 'settings.py' file:
+	AUTH_PROFILE_MODULE = 'userprofile.profile'
+
+* Add this module to the INSTALLED_APPS section of your settings.py:
+	'userprofile'
+
+* Add this line to your urls.py file:
+
+    (r'^profile/', include('userprofile.urls')),
+
+* Make the "media" directory accesible as your media content, or add the following line
+  to urls.py to test it:
+
+    # Serves media content. WARNING!! Only for development uses
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '../media/'}),
+
+    This sample assumes that settings.MEDIA_URL="site_media", if you want to use another URI for
+    the media content, you also need to change the paths /site_media/.. of the static content 
+    files (CSS and javascript files).
+
+* Fill the needed data of countries and continents of the profile database with these commands:
+	$ python manage.py loaddata userprofile-continent
+	$ python manage.py loaddata userprofile-country
+
+* You will need to fill the e-mail server configuration of settings.py (if you didn't have it yet)
+  to try the e-mail validation process.
+
+* You will need a valid Google Maps API Key for your site. Put the key in the constant APIKEY located
+  in the file 'settings.py'.
+
+* Add the 'templates' directory to the TEMPLATES_DIRS section of your 'settings.py'. 
+  You can also modify the default templates supplied with the modules 'account' and 'userprofile'
+

@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/django-profile.css" type="text/css" />
+    {% block customcss %}{% endblock %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.6.min.js"></script>
+    {% block customjs %}{% endblock %}
+</head>
+{% load i18n %}
+<body>
+	<div class="content">
+		<div class="header">
+			<ul class="menu">
+				<li><a href="/">{% trans "Frontpage" %}</a></li>
+  			{% if user.is_authenticated %}
+				<li><a href="/accounts/profile/">{% trans "Profile" %}</a></li>
+   			<li><a href="/accounts/logout/">{% trans "Logout" %}</a></li>
+				{% else %} 
+				<li><a href="/accounts/profile/">{% trans "Login" %}</a></li>
+  			{% endif %}
+  		</ul>
+			{% if not user.is_authenticated %}
+			<p class="register">{% trans "If you don't have an account, you can" %} <a href="/accounts/register/">{% trans "sign up" %}</a> {% trans "for one; it's free, and you could try this demo and publish your usercard." %}</p>
+			{% endif %}
+		</div>
+		<div style="padding: 15px;">
+		{% block content %}{% endblock %}
+		</div>
+	</div>
+</body>
+</html>
