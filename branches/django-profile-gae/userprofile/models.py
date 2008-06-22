@@ -89,7 +89,7 @@ class Profile(db.Model):
         return GENDER_IMAGES[self.gender]
 
     def get_absolute_url(self):
-        return "/profile/users/%s/" % self.user.nickname()
+        return "/accounts/public/%s/" % self.user.nickname()
 
     def yearsold(self):
         return (datetime.date.today().toordinal() - self.birthdate.toordinal()) / 365

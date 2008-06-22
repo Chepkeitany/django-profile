@@ -8,6 +8,8 @@ WEBSEARCH = hasattr(settings, "WEBSEARCH") and settings.WEBSEARCH or None
 
 urlpatterns = patterns('',
     # Private profile
+    (r'^fill/$', fill),
+    (r'^logout/$', logout),
     (r'^profile/$', overview, { 'section': 'overview', 'APIKEY': APIKEY, 'template': 'userprofile/overview.html'}),
     (r'^profile/edit/(?P<section>location)/$', profile, {'APIKEY': APIKEY, 'template': 'userprofile/location.html'}),
     (r'^profile/edit/(?P<section>personal)/$', profile, {'template': 'userprofile/personal.html'}),
@@ -19,9 +21,14 @@ urlpatterns = patterns('',
     (r'^profile/edit/avatar/delete/$', avatardelete),
     (r'^profile/edit/avatar/search/$', searchimages, { 'section': 'avatar', 'template': 'userprofile/avatar_search.html'}),
     (r'^profile/edit/avatar/crop/$', avatarcrop, { 'section': 'avatar', 'template': 'userprofile/avatar_crop.html'}),
-    (r'^profile/edit/avatar/crop/done/$', direct_to_template, { 'section': 'avatar', 'template': 'userprofile/avatar_done.html'}),
+    (r'^profile/edit/avatar/crop/done/$', direct_to_template, { 'extra_context': { 'user': get_current_user }, 'section': 'avatar', 'template': 'userprofile/avatar_done.html'}),
     (r'^profile/getcountry_info/(?P<lat>[0-9\.\-]+)/(?P<lng>[0-9\.\-]+)/$', fetch_geodata),
 
+    # Avatars
+    (r'^getavatar/(?P<current_user>[0-9a-zA-Z\.\-\@]+)/$', getavatar),
+    (r'^getavatar/(?P<current_user>[0-9a-zA-Z\.\-\@]+)/(?P<size>[0-9]+)/$', getavatar),
+    (r'^getavatartemp/$', getavatar, { 'temp': True }),
+
     # Public profile
-    (r'^profile/(?P<current_user>[a-zA-Z0-9\-_]*)/$', public, {'APIKEY': APIKEY, 'template': 'userprofile/public.html'}),
+    (r'^public/(?P<current_user>[a-zA-Z0-9\-_\.\@]*)/$', public, {'APIKEY': APIKEY, 'template': 'userprofile/public.html'}),
 )

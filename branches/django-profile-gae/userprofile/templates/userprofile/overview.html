@@ -7,7 +7,7 @@
 	<h1>{% trans "Overview of your profile" %}</h1>
 	{% if profile.avatar %}
 	<div class="avatar">
-		<img src="{{ profile.get_avatar96_url }}" />
+		<img src="/accounts/getavatar/{{ user }}/" />
 	</div>
 	{% endif %}
   <fieldset>

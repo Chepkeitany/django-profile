@@ -8,7 +8,7 @@
   		$("a.delavatar").click(function() {
     		$.getJSON($(this).attr("href"), function(data) {
       		if (data.success) {
-        		$("img#avatarimg").attr("src", "/site_media/images/default.png");
+        		$("img#avatarimg").attr("src", "/static/images/default.png");
       		}
     		});
     		return false;

@@ -31,7 +31,9 @@
       <p class="error" style="width: 99%; margin: 5px 0px;">{{desc|join:","}}</p>
     {% endfor %}
   	{% endif %}
-		<img src="{{ profile.get_avatartemp_url }}" id="cropimage" />
+		<img src="/accounts/getavatartemp/" id="cropimage" />
+    <input type="hidden" name="width" value="0"/>
+    <input type="hidden" name="height" value="0"/>
     <input type="hidden" name="top" value="0"/>
     <input type="hidden" name="bottom" value="0"/>
     <input type="hidden" name="left" value="0"/>

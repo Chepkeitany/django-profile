@@ -4,9 +4,9 @@
 	{% if profile.gender and profile.visible.gender %}<img class="gender" style="clear: right;" src="{{ profile.get_genderimage_url }}" />{% endif %}
 	<ul>
 		{% if profile.avatar %}
-		<li><img class="photo" src="{{ profile.get_avatar64_url }}" alt="{{ profile.user }}"/></li>
+		<li><img class="photo" src="/accounts/getavatar/{{ profile.user }}/64/" alt="{{ profile.user }}"/></li>
 		{% else %}
-		<li><img class="photo" src="/site_media/images/default.64.png" alt="{% trans "No avatar" %}"/></li>
+		<li><img class="photo" src="/static/images/default.64.png" alt="{% trans "No avatar" %}"/></li>
 		{% endif %}
   	<li class="fn username"><strong>{% trans "Username" %}:</strong> {{ profile.user }}</li>
 		{% if profile.country and profile.visible.country_id %}<li><strong>{% trans "Country" %}:</strong> {{ profile.country }}</li>{% endif %}

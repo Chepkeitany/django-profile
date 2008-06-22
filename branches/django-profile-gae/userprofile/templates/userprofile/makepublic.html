@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% blocktrans %}{{ user }}'s Dashboard{% endblocktrans %}{% endblock %}
 {% block customjs %}
-{% if profile.latitude %}
+{% if profile.geopoint %}
 <script src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key={{ APIKEY }}" type="text/javascript"></script>
 <script type="text/javascript">
 	$(function() {
@@ -12,8 +12,8 @@
     	this.map.addControl(new GOverviewMapControl())
     	this.map.addControl(new GMapTypeControl())
     	this.map.enableContinuousZoom();
-    	this.map.setCenter(new GLatLng({{ profile.latitude }}, {{ profile.longitude }}), 4);
-    	this.marker = new GMarker(new GLatLng({{ profile.latitude }}, {{ profile.longitude }}), {clickable: false, bouncy: true, draggable: false});
+    	this.map.setCenter(new GLatLng({{ profile.geopoint.lat }}, {{ profile.geopoint.lon }}), 4);
+    	this.marker = new GMarker(new GLatLng({{ profile.geopoint.lat }}, {{ profile.geopoint.lon }}), {clickable: false, bouncy: true, draggable: false});
     	this.map.addOverlay(this.marker);
 		}
   });
@@ -86,7 +86,7 @@
 		<div>
     	<label for="id_country">{% trans "Country:" %}</label>
 			{% if profile.country %}
-			<input style="float: left;" type="checkbox" name="country_id_public" {% if profile.visible.country_id %}checked="on"{% endif %}/>
+			<input style="float: left;" type="checkbox" name="country_public" {% if profile.visible.country %}checked="on"{% endif %}/>
     	<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{{ profile.country }}</strong>
 			{% else %}
 			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>
@@ -104,8 +104,8 @@
 		</div>
     <div>
       <label for="map">{% trans "Position:" %}</label>
-			{% if profile.latitude %}
-			<input style="float: left;" type="checkbox" name="latitude_public" {% if profile.visible.latitude %}checked="on"{% endif %}/>
+			{% if profile.geopoint %}
+			<input style="float: left;" type="checkbox" name="geopoint_public" {% if profile.visible.geopoint %}checked="on"{% endif %}/>
       <div id="map"></div>
 			{% else %}
 			<strong style="float: left; line-height: 28px; margin: 0px; font-size: 1.1em;">{% trans "Not set" %}</strong>

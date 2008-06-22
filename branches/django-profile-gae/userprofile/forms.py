@@ -11,7 +11,7 @@ class ProfileForm(djangoforms.ModelForm):
 
     class Meta:
         model = Profile
-        exclude = ('user', 'slug', 'date', 'avatartemp', 'avatar', 'avatar16', 'avatar32', 'avatar64', 'avatar96')
+        fields = ('firstname', 'surname', 'birthdate', 'gender', 'url', 'about') 
 
 class LocationForm(djangoforms.ModelForm):
     """
@@ -55,4 +55,11 @@ class AvatarCropForm(forms.Form):
     bottom = forms.IntegerField()
     left = forms.IntegerField()
     right = forms.IntegerField()
+    width = forms.IntegerField()
+    height = forms.IntegerField()
 
+    def clean(self):
+        if int(self.cleaned_data.get('right') - self.cleaned_data.get('left')) < 96:
+            raise forms.ValidationError(_("You must select a portion of the image with a minimum of 96x96 pixels."))
+        else:
+            return self.cleaned_data
