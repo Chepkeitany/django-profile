@@ -1,0 +1,94 @@
+========================
+django-profile Changelog
+========================
+
+Version 0.5.0
+-------------
+
+* CSS and HTML formatted with Blueprint CSS (http://code.google.com/p/blueprintcss/).
+* Lot of code optimization of Django, HTML, CSS and Javascript.
+* Great effort on application usability and template design.
+* Removed every javascript effectism not really needed.
+* Lot of this work made as team with jonas.esp (http://code.google.com/u/jonas.esp/).
+
+
+Version 0.4.2
+-------------
+
+* Changed the CSS structure. Now is managed with the great Blueprint CSS Framework. Thanks to Kless.
+	http://code.google.com/p/blueprintcss/
+* Some cleanup on the image directory.
+
+Version 0.4.1
+-------------
+* Solved some bugs on the optional configuration parameters APIKEY and WEBSEARCH. Now they are
+  totally optional. Thanks to Kless.
+* Solved a bug on the image crop&resize. If you didn't select a portion of the image, an error
+  was raised. Thanks to David Castello for the report.
+* Some cleanup of the javascript files.
+
+Version 0.4.0.1
+---------------
+
+* Solved a problem with license issues. Thanks to Kless.
+* Solved a typo on the registration form. Thanks to stephan.d.walter.
+* Renamed ROOT_PATH to PROJECT_PATH and solved a bug about directory paths. Thanks to jonas.esp.
+
+Version 0.4.0
+-------------
+
+* Changed the license type. Now this project has a Simplified BSD license.
+* Backward incompatible with older versions.
+* Simpler, easier to integrate.
+* New interface, more usable and structured.
+* Removed the "account" module. Everything is integrated in the module "userprofile".
+* Added fixtures for the inital load of Countries and Continents. Thanks to Rob Yates.
+* Solved some bugs on the "account" module. Thanks to Rob Yates again.
+* Removed the "libmagic" dependency.
+* Updated jquery version.
+* New avatar crop&resize plugin.
+* New avatar management. You can insert an image from an URL, or make a search to Picasaweb.
+* Removed the Avatar model. It was innecesary and everything is better managed from the Profile model.
+
+
+Version 0.3.1
+-------------
+
+* Solved some bug issues. Thanks to evo for the report.
+* Modified the Profile model with the new syntax for the OneToOne fields after the QuerySet Refactor on Django.
+  Thanks to Arin. Read more:
+        http://code.djangoproject.com/wiki/QuerysetRefactorBranch#Backwardsincompatiblechanges
+* Added Italian translation. Thanks to the author of django-press (http://code.google.com/p/django-press/).
+
+
+Version 0.3
+-------------
+* WARNING!!! "profile" module renamed to "userprofile". The old name had a conflict with the python-profiler
+  module. If you're updating from the old version, you will have to dump and restore the old database data. 
+  Thanks to Mario Cesar for the report.
+* The allowed chars for a username are A-Z, a-z, 0-9 and _
+* Solved some mess with the importing of settings variables. Thanks to Mario Cesar.
+* We can activate an e-mail validation on the registration process.
+
+Version 0.2.1
+-------------
+
+* Added Portuguese Brazilian (pt-br) localization. Thanks to Pedro Valente.
+* Added Spanish (es) localization.
+* Localization framework. 
+* Better registration form. Check valid usernames.
+
+Version 0.1
+-----------
+
+* Save profile Ajax-like.
+* Removed the django-registration dependency.
+* Added hCard information in the UserCard.
+* Code cleaned-up and commented.
+* Use of geonames.org webservice to obtain the Country and region when clicking on the Google Map.
+* Changed to new version of ui.datepicker
+
+Version 0.001, 19 Nov 2007
+------------------------
+
+* First version uploaded to repository

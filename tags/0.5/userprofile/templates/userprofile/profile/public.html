@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ profile.user }}'s public profile{% endblock %}
+{% block robots %}noindex,nofollow{% endblock %}
+
+{% block extrajs %}
+	{% if profile.latitude and profile.longitude and profile.visible.location %}
+	<script type="text/javascript" src="http://www.google.com/jsapi?key={{ APIKEY }}"></script>
+	<script type="text/javascript">google.load("maps", "2");</script>
+	<script type="text/javascript">
+		$(function() {
+		if (google.maps.BrowserIsCompatible()) {
+			var map = new google.maps.Map2(document.getElementById("map"));
+      map.disableDragging();
+			map.setCenter(new google.maps.LatLng({{ profile.latitude }}, {{ profile.longitude }}), 4);
+			var marker = new google.maps.Marker(new google.maps.LatLng({{ profile.latitude }}, {{ profile.longitude }}), {clickable: false });
+			map.addOverlay(marker);
+		}
+		});
+	</script>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+	<h2>{% blocktrans with profile.user as user %}Public profile of {{ user }}{% endblocktrans %}</h2>
+
+	<div class="vcard">
+		<div class="span-10">
+		{% if profile.avatar %}
+			<img class="border top" src="{{ profile.get_avatar96_url }}" />
+		{% else %}
+			<img class="photo" src="{{ MEDIA_URL }}images/default.96.png" />
+		{% endif %}
+
+		<p>{% trans "Username" %}: <strong>{{ profile.user }}</strong></p>
+
+		{% if profile.firstname and profile.visible.firstname %}
+		<p>{% trans "Name" %}: <strong>{{ profile.firstname }} {{ profile.surname }}</strong></p>
+		{% endif %}
+
+		{% if profile.url and profile.visible.url %}
+			<li>{% trans "Url" %}: <a href="{{ profile.url }}">{{ profile.url }}</a></li>
+		{% endif %}
+
+		{% if profile.about and profile.visible.about %}
+			<li>{% trans "About" %}: {{ profile.about }}</li>
+		{% endif %}
+		</ul>
+		</div>
+		<div class="span-10 last">
+		{% if profile.gender and profile.visible.gender %}
+			<li>{% trans "Gender" %}: <img src="{{ profile.get_genderimage_url }}" /></li>
+		{% endif %}
+
+		{% if profile.country and profile.visible.country_id %}
+			<li>{% trans "Country" %}: {{ profile.country }}</li>
+		{% endif %}
+
+		{% if profile.location and profile.visible.location %}
+			<li>{% trans "Location" %}: {{ profile.location }}</li>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
