@@ -24,19 +24,15 @@
 		<label for="id_email">{% trans 'E-mail address' %}</label>
 		<p>{{ form.email }}
 		{% if form.email.errors %}
-			<span class="quiet red"><br />* {{ form.email.errors|join:"; " }}</span>
+			<span class="quiet"><br />* {{ form.email.errors|join:"; " }}</span>
 		{% endif %}
 		</p>
-		{% if form.non_field_errors %}
-			<ul class="quiet red">{{ form.non_field_errors.as_ul }}</ul>
-		{% endif %}
+		<input type="submit" value="{% trans 'Resend validation' %}" />
 	</fieldset>
-	<input type="submit" value="{% trans 'Resend validation' %}" />
 	</form>
 {% endblock %}
 
 {% block content-related %}
-	<div class="box">
-		<h4>{% trans "Enter your e-mail address and we'll resend the user activation e-mail to you" %}.</h4>
-	</div>
+	<br />
+	<h4>{% trans "Enter your e-mail address and we'll resend the user activation e-mail to you" %}.</h4>
 {% endblock %}
