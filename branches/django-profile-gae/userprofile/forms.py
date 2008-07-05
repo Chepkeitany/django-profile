@@ -11,7 +11,7 @@ class ProfileForm(djangoforms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('firstname', 'surname', 'birthdate', 'gender', 'url', 'about') 
+        fields = ('firstname', 'surname', 'birthdate', 'gender', 'url', 'about')
 
 class LocationForm(djangoforms.ModelForm):
     """

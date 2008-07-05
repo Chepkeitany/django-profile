@@ -4,15 +4,12 @@ function mapFramework() {
 
    	this.map = new GMap2(document.getElementById("map"));
 		this.map.addControl(new GLargeMapControl());
-		this.map.addControl(new GOverviewMapControl())
 		this.map.addControl(new GMapTypeControl())
 		this.map.enableContinuousZoom();
 
 		var lat = lng = 0;
-    if ($("#id_geopoint").val()) {
-      lat = $("#id_geopoint").val().split(",")[0];
-      lng = $("#id_geopoint").val().split(",")[1];
-    }
+    if ($("#id_latitude").val()) lat = $("#id_latitude").val();
+    if ($("#id_longitude").val()) lng = $("#id_longitude").val();
 
   	this.map.setCenter(new GLatLng(lat, lng), 4);
 		this.marker = new GMarker(new GLatLng(lat, lng), {clickable: false, bouncy: true, draggable: true}); 
@@ -21,7 +18,8 @@ function mapFramework() {
 		GEvent.addListener(this.marker, "dragend", function(){
     	$("img.loading").show();
     	var point = this.getLatLng();
-      $("#id_geopoint").val(point.lat().toFixed(6) + "," + point.lng().toFixed(6));
+      $("#id_latitude").val(point.lat().toFixed(6));
+      $("#id_longitude").val(point.lng().toFixed(6));
     	$.getJSON("/accounts/profile/getcountry_info/" + point.lat() + "/" +  point.lng() + "/", function(data) {
       	$("#id_country").val(data['country']);
       	$("#id_location").val(data['region']);
@@ -46,9 +44,12 @@ mapFramework.prototype.searchLocation = function() {
  		if (point) {
  			g.map.setCenter(point);
  			g.marker.setLatLng(point);
-      $("#id_geopoint").val(point.lat().toFixed(6) + "," + point.lng().toFixed(6));
+      $("#id_latitude").val(point.lat().toFixed(6));
+      $("#id_longitude").val(point.lng().toFixed(6));
  			$.getJSON("/accounts/profile/getcountry_info/" + point.lat() + "/" +  point.lng() + "/", function(data) {
  				$("#id_country").val(data['country']);
+      	$("#id_location").val(data['region']);
+      	$("#location_info").text(data['region']);
  				$("img.loading").hide();
  			});
  		}
@@ -68,10 +69,10 @@ function initMap2() {
 
 $(function() {
 	$("#id_country").change(function() {
-		$("#location_info").text("Drag the marker on the map to establish a more precise location.");
 		if (!$("#id_country option:selected").val()) {
 			$("#id_location").val('');
-			$("#id_geopoint").val('');
+			$("#id_latitude").val('');
+			$("#id_longitude").val('');
 			$("div.mapinfo").hide();
 			return;
 		}
