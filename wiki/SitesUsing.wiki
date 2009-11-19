@@ -1,8 +1,13 @@
 = Sites using django-profile = 
 
-Only me for the moment. :) I'm using this project on a production-ready site, with no modifications. I mean, the code used in this project is exactly the same used on the site. Only 1 personalized template has been modified. This is the site:
+I'm using this project on a production-ready site, with no modifications. I mean, the code used in this project is exactly the same used on the site. Only 1 personalized template has been modified. This is the site:
 
  * [http://gameocracy.org]
+
+
+Another website using django-profile, a [http://www.w0manpower.com/ Dating website] made with django:
+
+ * [http://www.w0manpower.com/]
 
 And there's the demo application too:
  
